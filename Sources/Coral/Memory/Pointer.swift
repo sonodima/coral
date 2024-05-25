@@ -20,6 +20,10 @@ public struct Pointer {
     address == 0
   }
 
+  public var protection: Protection? {
+    view.protection(at: address)
+  }
+
   public init(view: any MemView, to address: UInt) {
     self.view = view
     self.address = address
@@ -87,10 +91,6 @@ public struct Pointer {
   @discardableResult
   public func protect(size: UInt, value: Protection) -> Bool {
     view.protect(at: address, size: size, value: value)
-  }
-
-  public var protection: Protection? {
-    view.protection(at: address)
   }
 
   public func toRange(size: UInt) -> MemRange {
