@@ -31,8 +31,8 @@ public protocol MemView {
 }
 
 extension MemView {
-  public func ptr(to address: UInt) -> Pointer {
-    Pointer(view: self, to: address)
+  public func ptr(to address: UInt) -> RawPointer {
+    RawPointer(view: self, to: address)
   }
 
   public func range(from module: OsModule) -> MemRange {
@@ -67,19 +67,38 @@ extension MemView {
 
   public func read(
     from address: UInt,
-    as type: Pointer.Type = Pointer.self
-  ) -> Pointer? {
-    read(from: address, as: UInt.self)
-      .map { value in Pointer(view: self, to: value) }
+    as type: RawPointer.Type = RawPointer.self
+  ) -> RawPointer? {
+    read(from: address, as: UInt.self).map { value in
+      RawPointer(view: self, to: value)
+    }
   }
 
   @discardableResult
   public func write(
     to address: UInt,
-    value: Pointer,
-    as type: Pointer.Type = Pointer.self
+    value: RawPointer,
+    as type: RawPointer.Type = RawPointer.self
   ) -> Bool {
     write(to: address, value: value.address)
+  }
+
+  public func read<T>(
+    from address: UInt,
+    as type: Pointer<T>.Type = Pointer<T>.self
+  ) -> Pointer<T>? {
+    read(from: address, as: RawPointer.self).map { raw in
+      Pointer(raw: raw, for: T.self)
+    }
+  }
+
+  @discardableResult
+  public func write<T>(
+    to address: UInt,
+    value: Pointer<T>,
+    as type: Pointer<T>.Type = Pointer<T>.self
+  ) -> Bool {
+    write(to: address, value: value.raw)
   }
 
   public func read<T>(
@@ -90,6 +109,8 @@ extension MemView {
     // Only allow reading arrays of plain-old-data, that is, types that can be safely
     // copied to a raw memory buffer.
     assert(_isPOD(T.self), "Reading non-POD types is unsafe and not supported!")
+
+    // TODO: Handle arrays of RawPointer and Pointer<T> types.
 
     // Because the array allocates a contiguous memory buffer, we can safely read
     // directly into it.
@@ -115,6 +136,8 @@ extension MemView {
     // Only allow writing arrays of plain-old-data, that is, types that can be safely
     // copied to a raw memory buffer.
     assert(_isPOD(T.self), "Writing non-POD types is unsafe and not supported!")
+
+    // TODO: Handle arrays of RawPointer and Pointer<T> types.
 
     // Because the array is guaranteed to be allocated continuously, we can write
     // its entire content directly.
@@ -192,7 +215,7 @@ extension MemView {
     return write(to: address, array: encoded) == encoded.count
   }
 
-  public subscript(address: UInt) -> Pointer {
+  public subscript(address: UInt) -> RawPointer {
     ptr(to: address)
   }
 

@@ -46,14 +46,14 @@ public struct PatternIterator: Sequence, IteratorProtocol {
 
 public struct PointerPatternIterator: Sequence, IteratorProtocol {
   private var _iterator: PatternIterator
-  private var _base: Pointer
+  private var _base: RawPointer
 
-  internal init(iterator: PatternIterator, base: Pointer) {
+  internal init(iterator: PatternIterator, base: RawPointer) {
     _iterator = iterator
     _base = base
   }
 
-  public mutating func next() -> Pointer? {
+  public mutating func next() -> RawPointer? {
     _iterator.next().map { _base + UInt($0) }
   }
 }

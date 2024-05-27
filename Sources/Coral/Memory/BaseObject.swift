@@ -13,7 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 public class BaseObject {
-  public let pointer: Pointer
+  public let pointer: RawPointer
 
   public var view: any MemView {
     pointer.view
@@ -23,7 +23,7 @@ public class BaseObject {
     pointer.isZero
   }
 
-  public init(_ pointer: Pointer) {
+  public init(_ pointer: RawPointer) {
     self.pointer = pointer
   }
 
@@ -32,7 +32,7 @@ public class BaseObject {
     return self
   }
 
-  public func to<T>(_ lambda: (Pointer) -> T) -> T {
+  public func map<T>(_ lambda: (RawPointer) -> T) -> T {
     lambda(pointer)
   }
 }

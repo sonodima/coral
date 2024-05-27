@@ -12,109 +12,44 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public struct Pointer {
-  public let view: any MemView
-  public var address: UInt
+public struct Pointer<T> {
+  public var raw: RawPointer
+
+  public var address: UInt {
+    raw.address
+  }
 
   public var isZero: Bool {
-    address == 0
+    raw.isZero
   }
 
-  public var protection: Protection? {
-    view.protection(at: address)
+  public init(raw: RawPointer, for type: T.Type = T.self) {
+    self.raw = raw
   }
 
-  public init(view: any MemView, to address: UInt) {
-    self.view = view
-    self.address = address
+  public init(view: any MemView, to address: UInt, for type: T.Type = T.self) {
+    self.raw = RawPointer(view: view, to: address)
   }
 
-  @discardableResult
-  public func read(into buffer: UnsafeMutableRawBufferPointer) -> UInt {
-    view.read(from: address, into: buffer)
-  }
-
-  @discardableResult
-  public func write(data: UnsafeRawBufferPointer) -> UInt {
-    view.write(to: address, data: data)
-  }
-
-  public func read<T>(as type: T.Type = T.self) -> T? {
-    view.read(from: address, as: type)
+  public func read() -> T? {
+    raw.read(as: T.self)
   }
 
   @discardableResult
-  public func write<T>(value: T, as type: T.Type = T.self) -> Bool {
-    view.write(to: address, value: value, as: type)
-  }
-
-  public func read(as type: Self.Type = Self.self) -> Self? {
-    view.read(from: address, as: type)
-  }
-
-  @discardableResult
-  public func write(value: Self, as type: Self.Type = Self.self) -> Bool {
-    view.write(to: address, value: value, as: type)
-  }
-
-  public func read<T>(count: Int, of type: T.Type = T.self) -> ContiguousArray<T> {
-    view.read(from: address, count: count, of: type)
-  }
-
-  @discardableResult
-  public func write<T>(array: ContiguousArray<T>, of type: T.Type = T.self) -> UInt {
-    view.write(to: address, array: array, of: type)
-  }
-
-  public func read<E: Unicode.Encoding>(
-    chars: Int,
-    encoding: E.Type = Unicode.UTF8.self,
-    zeroTerm: Bool = false
-  ) -> String {
-    view.read(from: address, chars: chars, encoding: encoding, zeroTerm: zeroTerm)
-  }
-
-  @discardableResult
-  public func write<E: Unicode.Encoding>(
-    string: String,
-    encoding: E.Type = Unicode.UTF8.self,
-    zeroTerm: Bool = false
-  ) -> Bool {
-    view.write(to: address, string: string, encoding: encoding, zeroTerm: zeroTerm)
-  }
-
-  @discardableResult
-  public func free(size: UInt) -> Bool {
-    view.free(from: address, size: size)
-  }
-
-  @discardableResult
-  public func protect(size: UInt, value: Protection) -> Bool {
-    view.protect(at: address, size: size, value: value)
-  }
-
-  public func toRange(size: UInt) -> MemRange {
-    MemRange(base: self, size: size)
-  }
-
-  public func toRange(end: Self) -> MemRange {
-    MemRange(base: self, size: end.address >= address ? end.address - address : 0)
-  }
-
-  public func to<T>(_ lambda: (Self) -> T) -> T {
-    lambda(self)
+  public func write(value: T) -> Bool {
+    raw.write(value: value, as: T.self)
   }
 
   public func add(_ value: UInt) -> Self {
-    Self(view: view, to: address &+ value)
+    Self(raw: raw.add(value))
   }
 
   public func sub(_ value: UInt) -> Self {
-    Self(view: view, to: address &- value)
+    Self(raw: raw.sub(value))
   }
 
   public func offset(_ value: Int) -> Self {
-    Self(view: view, to: address &+ UInt(bitPattern: value))
+    Self(raw: raw.offset(value))
   }
 
   public static func + (lhs: Self, rhs: UInt) -> Self {
@@ -126,36 +61,36 @@ public struct Pointer {
   }
 
   public static func += (lhs: inout Self, rhs: UInt) {
-    lhs.address &+= rhs
+    lhs.raw += rhs
   }
 
   public static func -= (lhs: inout Self, rhs: UInt) {
-    lhs.address &-= rhs
+    lhs.raw -= rhs
   }
 }
 
 extension Pointer: Equatable {
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.address == rhs.address
+    lhs.raw == rhs.raw
   }
 }
 
 extension Pointer: Comparable {
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.address < rhs.address
+    lhs.raw < rhs.raw
   }
 }
 
 extension Pointer: Hashable {
   public func hash(into hasher: inout Hasher) {
-    hasher.combine(address)
+    hasher.combine(raw)
   }
 }
 
 extension Pointer: CustomDebugStringConvertible {
   public var debugDescription: String {
     let address = String(address, radix: 16, uppercase: true)
-    return "Pointer(0x\(address))"
+    return "Pointer<\(T.self)>(0x\(address))"
   }
 }
 

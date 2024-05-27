@@ -15,7 +15,7 @@
 import Foundation
 
 public struct MemRange {
-  public let base: Pointer
+  public let base: RawPointer
   public let size: UInt
 
   public var view: any MemView {
@@ -26,12 +26,12 @@ public struct MemRange {
     size == 0
   }
 
-  public init(base: Pointer, size: UInt) {
+  public init(base: RawPointer, size: UInt) {
     self.base = base
     self.size = min(size, UInt.max - base.address)
   }
 
-  public func ptr(at offset: UInt) -> Pointer? {
+  public func ptr(at offset: UInt) -> RawPointer? {
     offset < size ? base + offset : nil
   }
 
@@ -50,17 +50,17 @@ public struct MemRange {
     return scan(for: pattern)
   }
 
-  public func find(pattern: Pattern) -> Pointer? {
+  public func find(pattern: Pattern) -> RawPointer? {
     let data = read()
     return pattern.find(in: data).map { base + UInt($0) }
   }
 
-  public func find(string: String) throws -> Pointer? {
+  public func find(string: String) throws -> RawPointer? {
     let pattern = try Pattern(from: string)
     return find(pattern: pattern)
   }
 
-  public func contains(_ pointer: Pointer) -> Bool {
+  public func contains(_ pointer: RawPointer) -> Bool {
     pointer >= base && pointer.address <= base.address + size
   }
 
@@ -70,7 +70,7 @@ public struct MemRange {
     other.base >= base && other.base.address + other.size <= base.address + size
   }
 
-  public subscript(offset: UInt) -> Pointer? {
+  public subscript(offset: UInt) -> RawPointer? {
     ptr(at: offset)
   }
 }
