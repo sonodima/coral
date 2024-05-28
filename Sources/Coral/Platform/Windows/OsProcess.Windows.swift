@@ -136,46 +136,6 @@
       _startTime = Self.startTimeImpl(for: handle)
     }
 
-    public static func iterate() throws -> OsProcessIterator {
-      try OsProcessIterator()
-    }
-
-    public func modules() throws -> [ProcessModule] {
-      // Specifying TH32CS_SNAPMODULE32 will include the 32-bit modules in the
-      // snapshot, even for 64-bit processes.
-      let flags = DWORD(TH32CS_SNAPMODULE32 | TH32CS_SNAPMODULE)
-      guard let snapshot = CreateToolhelp32Snapshot(flags, DWORD(id)) else {
-        throw SystemError.accessDenied
-      }
-
-      defer { CloseHandle(snapshot) }
-
-      var entry = MODULEENTRY32W()
-      entry.dwSize = DWORD(MemoryLayout<MODULEENTRY32W>.size)
-      guard Module32FirstW(snapshot, &entry) else {
-        if GetLastError() != ERROR_NO_MORE_FILES {
-          throw SystemError.operationFailed
-        } else {
-          return []
-        }
-      }
-
-      var modules: [ProcessModule] = []
-      repeat {
-        let address = UInt(bitPattern: entry.modBaseAddr)
-        let size = UInt(entry.modBaseSize)
-        let name = withUnsafeBytes(of: entry.szModule) { ptr in
-          String.decodeCString(
-            ptr.bindMemory(to: UInt16.self).baseAddress!,
-            as: Unicode.UTF16.self)?.result
-        }
-
-        let module = ProcessModule(base: address, size: size, name: name)
-        modules.append(module)
-      } while Module32NextW(snapshot, &entry)
-      return modules
-    }
-
     private static func pathImpl(for handle: HANDLE) -> URL? {
       var buffer = [WCHAR](repeating: 0, count: Int(MAX_PATH))
       let length = K32GetModuleFileNameExW(handle, nil, &buffer, DWORD(buffer.count))

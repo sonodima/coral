@@ -31,17 +31,15 @@ public protocol __OsProcess_Shared:
 
   init?(id: UInt)
   init?(name: String) throws
-
-  static func iterate() throws -> OsProcessIterator
-
-  func modules() throws -> [ProcessModule]
-  func module(name: String) throws -> ProcessModule?
-  func module(at address: UInt) throws -> ProcessModule?
 }
 
 extension __OsProcess_Shared {
   public var isLocal: Bool {
     id == ProcessInfo.processInfo.processIdentifier
+  }
+
+  public static func iterate() throws -> OsProcessIterator {
+    try OsProcessIterator()
   }
 
   public static func all() throws -> [OsProcess] {
@@ -52,12 +50,20 @@ extension __OsProcess_Shared {
     try iterate().filter { $0.name == name }
   }
 
+  public func iterateModules() throws -> ProcessModuleIterator {
+    try ProcessModuleIterator(id: id)
+  }
+
+  public func modules() throws -> [ProcessModule] {
+    try iterateModules().map { $0 }
+  }
+
   public func module(name: String) throws -> ProcessModule? {
-    try modules().first { $0.name == name }
+    try iterateModules().first { $0.name == name }
   }
 
   public func module(at address: UInt) throws -> ProcessModule? {
-    try modules().first { $0.base == address }
+    try iterateModules().first { $0.base == address }
   }
 }
 
