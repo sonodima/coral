@@ -17,6 +17,7 @@ import Foundation
 public protocol __Platform_Shared {
   static var pageSize: UInt { get }
   static var architecture: Architecture { get }
+  static var isElevated: Bool? { get }
 }
 
 extension __Platform_Shared {

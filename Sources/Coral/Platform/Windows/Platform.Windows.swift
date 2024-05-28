@@ -38,6 +38,10 @@
 
       return _architecture!
     }
+
+    public static var isElevated: Bool? {
+      OsProcess.local.isElevated
+    }
   }
 
 #endif

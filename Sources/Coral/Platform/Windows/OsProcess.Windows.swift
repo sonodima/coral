@@ -66,6 +66,29 @@
       }
     }
 
+    public var isElevated: Bool? {
+      let access = DWORD(PROCESS_QUERY_LIMITED_INFORMATION)
+      guard let handle = OpenProcess(access, false, DWORD(id)) else {
+        return nil
+      }
+
+      defer { CloseHandle(handle) }
+      
+      var token: HANDLE?
+      OpenProcessToken(handle, DWORD(TOKEN_QUERY), &token)
+      guard let token = token else {
+        return nil
+      }
+
+      var elevation = TOKEN_ELEVATION()
+      var size = DWORD(MemoryLayout<TOKEN_ELEVATION>.size)
+      guard GetTokenInformation(token, TokenElevation, &elevation, size, &size) else {
+        return nil
+      }
+
+      return elevation.TokenIsElevated != 0
+    }
+
     public init?(id: UInt) {
       let access = DWORD(PROCESS_QUERY_LIMITED_INFORMATION)
       guard let handle = OpenProcess(access, false, DWORD(id)) else {

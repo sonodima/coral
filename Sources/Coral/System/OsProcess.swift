@@ -27,6 +27,7 @@ public protocol __OsProcess_Shared:
   var mainModule: OsModule? { mutating get }
   var path: URL? { mutating get }
   var isRunning: Bool? { get }
+  var isElevated: Bool? { get }
 
   init?(id: UInt)
   init?(name: String) throws
