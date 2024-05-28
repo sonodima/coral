@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public struct PatternIterator: Sequence, IteratorProtocol {
+public class PatternIterator: Sequence, IteratorProtocol {
   private let _pattern: Pattern
   private let _data: ContiguousArray<UInt8>
   private var _i: Int = 0
@@ -22,7 +22,7 @@ public struct PatternIterator: Sequence, IteratorProtocol {
     _data = data
   }
 
-  public mutating func next() -> Int? {
+  public func next() -> Int? {
     var result: Int? = nil
     while _i < _data.count - _pattern.data.count && result == nil {
       var found = true
@@ -44,7 +44,7 @@ public struct PatternIterator: Sequence, IteratorProtocol {
   }
 }
 
-public struct PointerPatternIterator: Sequence, IteratorProtocol {
+public class PointerPatternIterator: Sequence, IteratorProtocol {
   private var _iterator: PatternIterator
   private var _base: RawPointer
 
@@ -53,7 +53,7 @@ public struct PointerPatternIterator: Sequence, IteratorProtocol {
     _base = base
   }
 
-  public mutating func next() -> RawPointer? {
+  public func next() -> RawPointer? {
     _iterator.next().map { _base + UInt($0) }
   }
 }
