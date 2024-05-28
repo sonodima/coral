@@ -73,7 +73,7 @@
       }
 
       defer { CloseHandle(handle) }
-      
+
       var token: HANDLE?
       OpenProcessToken(handle, DWORD(TOKEN_QUERY), &token)
       guard let token = token else {
@@ -109,7 +109,15 @@
       name = _path?.lastPathComponent
     }
 
-    private init?(entry: PROCESSENTRY32W) {
+    public init?(name: String) {
+      if let process = try? Self.iterate().first(where: { $0.name == name }) {
+        self = process
+      } else {
+        return nil
+      }
+    }
+
+    internal init?(entry: PROCESSENTRY32W) {
       let access = DWORD(PROCESS_QUERY_LIMITED_INFORMATION)
       guard let handle = OpenProcess(access, false, entry.th32ProcessID) else {
         return nil
@@ -128,25 +136,8 @@
       _startTime = Self.startTimeImpl(for: handle)
     }
 
-    public static func all() throws -> [Self] {
-      let flags = DWORD(TH32CS_SNAPPROCESS)
-      guard let snapshot = CreateToolhelp32Snapshot(flags, 0) else {
-        throw SystemError.accessDenied
-      }
-
-      defer { CloseHandle(snapshot) }
-
-      var entry = PROCESSENTRY32W()
-      entry.dwSize = DWORD(MemoryLayout<PROCESSENTRY32W>.size)
-      guard Process32FirstW(snapshot, &entry) else {
-        throw SystemError.operationFailed
-      }
-
-      var processes: [Self] = []
-      repeat {
-        Self(entry: entry).map { processes.append($0) }
-      } while Process32NextW(snapshot, &entry)
-      return processes
+    public static func iterate() throws -> OsProcessIterator {
+      try OsProcessIterator()
     }
 
     public func modules() throws -> [OsModule] {

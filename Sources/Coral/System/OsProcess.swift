@@ -32,7 +32,7 @@ public protocol __OsProcess_Shared:
   init?(id: UInt)
   init?(name: String) throws
 
-  static func all() throws -> [Self]
+  static func iterate() throws -> OsProcessIterator
 
   func modules() throws -> [OsModule]
   func module(name: String) throws -> OsModule?
@@ -44,16 +44,12 @@ extension __OsProcess_Shared {
     id == ProcessInfo.processInfo.processIdentifier
   }
 
-  public init?(name: String) throws {
-    guard let process = try Self.all(name: name).first else {
-      return nil
-    }
-
-    self = process
+  public static func all() throws -> [OsProcess] {
+    try iterate().map { $0 }
   }
 
-  public static func all(name: String) throws -> [Self] {
-    try all().filter { $0.name == name }
+  public static func all(name: String) throws -> [OsProcess] {
+    try iterate().filter { $0.name == name }
   }
 
   public func module(name: String) throws -> OsModule? {
