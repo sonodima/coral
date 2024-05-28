@@ -34,7 +34,7 @@
 
     private var _path: URL?
 
-    public lazy var mainModule: OsModule? = {
+    public lazy var mainModule: ProcessModule? = {
       // On NT-based systems, the main module is the first module in the list.
       try? modules().first
     }()
@@ -140,7 +140,7 @@
       try OsProcessIterator()
     }
 
-    public func modules() throws -> [OsModule] {
+    public func modules() throws -> [ProcessModule] {
       // Specifying TH32CS_SNAPMODULE32 will include the 32-bit modules in the
       // snapshot, even for 64-bit processes.
       let flags = DWORD(TH32CS_SNAPMODULE32 | TH32CS_SNAPMODULE)
@@ -160,7 +160,7 @@
         }
       }
 
-      var modules: [OsModule] = []
+      var modules: [ProcessModule] = []
       repeat {
         let address = UInt(bitPattern: entry.modBaseAddr)
         let size = UInt(entry.modBaseSize)
@@ -170,7 +170,7 @@
             as: Unicode.UTF16.self)?.result
         }
 
-        let module = OsModule(base: address, size: size, name: name)
+        let module = ProcessModule(base: address, size: size, name: name)
         modules.append(module)
       } while Module32NextW(snapshot, &entry)
       return modules

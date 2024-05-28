@@ -14,7 +14,7 @@
 
 import Foundation
 
-public struct OsModule {
+public struct ProcessModule {
   public let base: UInt
   public let size: UInt
   public let name: String?
@@ -26,13 +26,13 @@ public struct OsModule {
   }
 }
 
-extension OsModule: Equatable {
+extension ProcessModule: Equatable {
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.base == rhs.base && lhs.size == rhs.size && lhs.name == rhs.name
   }
 }
 
-extension OsModule: Hashable {
+extension ProcessModule: Hashable {
   public func hash(into hasher: inout Hasher) {
     hasher.combine(base)
     hasher.combine(size)
@@ -40,7 +40,7 @@ extension OsModule: Hashable {
   }
 }
 
-extension OsModule: CustomDebugStringConvertible {
+extension ProcessModule: CustomDebugStringConvertible {
   public var debugDescription: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
@@ -49,11 +49,11 @@ extension OsModule: CustomDebugStringConvertible {
     let base = String(base, radix: 16, uppercase: true)
     let size = formatter.string(fromByteCount: Int64(size))
     let name = name != nil ? "\"\(name!)\"" : "nil"
-    return "OsModule(base: \(base), size: \(size), name: \(name))"
+    return "ProcessModule(base: \(base), size: \(size), name: \(name))"
   }
 }
 
-extension OsModule: CustomStringConvertible {
+extension ProcessModule: CustomStringConvertible {
   public var description: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
@@ -62,6 +62,6 @@ extension OsModule: CustomStringConvertible {
     let base = String(base, radix: 16, uppercase: true)
     let size = formatter.string(fromByteCount: Int64(size))
     let name = name != nil ? name! : "nil"
-    return "OsModule - Base: \(base), Size: \(size), Name: \(name)"
+    return "ProcessModule - Base: \(base), Size: \(size), Name: \(name)"
   }
 }

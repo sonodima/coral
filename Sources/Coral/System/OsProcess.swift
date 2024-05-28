@@ -24,7 +24,7 @@ public protocol __OsProcess_Shared:
   var name: String? { get }
   var architecture: Architecture { get }
 
-  var mainModule: OsModule? { mutating get }
+  var mainModule: ProcessModule? { mutating get }
   var path: URL? { mutating get }
   var isRunning: Bool? { get }
   var isElevated: Bool? { get }
@@ -34,9 +34,9 @@ public protocol __OsProcess_Shared:
 
   static func iterate() throws -> OsProcessIterator
 
-  func modules() throws -> [OsModule]
-  func module(name: String) throws -> OsModule?
-  func module(at address: UInt) throws -> OsModule?
+  func modules() throws -> [ProcessModule]
+  func module(name: String) throws -> ProcessModule?
+  func module(at address: UInt) throws -> ProcessModule?
 }
 
 extension __OsProcess_Shared {
@@ -52,11 +52,11 @@ extension __OsProcess_Shared {
     try iterate().filter { $0.name == name }
   }
 
-  public func module(name: String) throws -> OsModule? {
+  public func module(name: String) throws -> ProcessModule? {
     try modules().first { $0.name == name }
   }
 
-  public func module(at address: UInt) throws -> OsModule? {
+  public func module(at address: UInt) throws -> ProcessModule? {
     try modules().first { $0.base == address }
   }
 }

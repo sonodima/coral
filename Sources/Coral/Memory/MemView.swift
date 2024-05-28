@@ -35,7 +35,7 @@ extension MemView {
     RawPointer(view: self, to: address)
   }
 
-  public func range(from module: OsModule) -> MemRange {
+  public func range(from module: ProcessModule) -> MemRange {
     ptr(to: module.base).toRange(size: module.size)
   }
 
@@ -219,7 +219,7 @@ extension MemView {
     ptr(to: address)
   }
 
-  public subscript(module: OsModule) -> MemRange {
+  public subscript(module: ProcessModule) -> MemRange {
     range(from: module)
   }
 }
