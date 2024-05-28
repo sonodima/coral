@@ -1,5 +1,3 @@
-// swift-tools-version: 5.10
-
 // Copyright (C) 2024 sonodima
 // This file is part of the Coral project.
 //
@@ -14,33 +12,6 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-import PackageDescription
-
-var linkerSettings: [LinkerSetting] {
-#if os(Windows)
-  [
-    .linkedLibrary("ntdll"),
-  ]
-#else
-  []
-#endif
+public protocol __Time_Shared {
+  static func sleep(for duration: TimeDuration)
 }
-
-let package = Package(
-  name: "Coral",
-  products: [
-    .library(name: "Coral", targets: ["Coral"]),
-    .executable(
-      name: "Example_Junkyard",
-      targets: ["Example_Junkyard"]),
-  ],
-  targets: [
-    .target(
-      name: "Coral",
-      linkerSettings: linkerSettings),
-    .executableTarget(
-      name: "Example_Junkyard",
-      dependencies: ["Coral"],
-      path: "Examples/Junkyard"),
-  ]
-)
