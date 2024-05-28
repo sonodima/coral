@@ -17,8 +17,8 @@
   import WinSDK
 
   extension Architecture {
-    internal static func fromSystem(_ value: WORD) -> Architecture {
-      switch value {
+    internal init(_ value: WORD) {
+      self = switch value {
       case WORD(PROCESSOR_ARCHITECTURE_AMD64): .x86_64
       case WORD(PROCESSOR_ARCHITECTURE_INTEL): .x86
       case WORD(PROCESSOR_ARCHITECTURE_ARM64): .arm64

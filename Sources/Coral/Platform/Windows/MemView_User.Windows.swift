@@ -104,7 +104,7 @@
         address.flatMap { LPVOID(bitPattern: $0) },
         SIZE_T(size),
         DWORD(type),
-        protection.toSystem()
+        protection.system
       ).map { base in
         let address = UInt(bitPattern: base)
         return MemRange(base: ptr(to: address), size: size)
@@ -127,7 +127,7 @@
         _handle,
         LPVOID(bitPattern: address),
         SIZE_T(size),
-        value.toSystem(),
+        value.system,
         &_oldValue)
     }
 
@@ -140,7 +140,7 @@
         &info,
         SIZE_T(size)
       ) == size
-        ? Protection.fromSystem(info.Protect)
+        ? Protection(info.Protect)
         : nil
     }
   }

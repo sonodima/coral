@@ -17,7 +17,18 @@
   import WinSDK
 
   extension Protection {
-    internal func toSystem() -> DWORD {
+    internal init(_ value: DWORD) {
+      self = switch value {
+      case DWORD(PAGE_EXECUTE_READWRITE): .rwx
+      case DWORD(PAGE_READWRITE): .rw
+      case DWORD(PAGE_EXECUTE_READ): .rx
+      case DWORD(PAGE_READONLY): .r
+      case DWORD(PAGE_EXECUTE): .x
+      default: .none
+      }
+    }
+
+    internal var system: DWORD {
       switch self {
       case .none: DWORD(PAGE_NOACCESS)
       case .r: DWORD(PAGE_READONLY)
@@ -25,17 +36,6 @@
       case .rw: DWORD(PAGE_READWRITE)
       case .rx: DWORD(PAGE_EXECUTE_READ)
       case .rwx: DWORD(PAGE_EXECUTE_READWRITE)
-      }
-    }
-
-    internal static func fromSystem(_ value: DWORD) -> Protection {
-      switch value {
-      case DWORD(PAGE_EXECUTE_READWRITE): .rwx
-      case DWORD(PAGE_READWRITE): .rw
-      case DWORD(PAGE_EXECUTE_READ): .rx
-      case DWORD(PAGE_READONLY): .r
-      case DWORD(PAGE_EXECUTE): .x
-      default: .none
       }
     }
   }

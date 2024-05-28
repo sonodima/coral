@@ -33,7 +33,7 @@
       if _architecture == nil {
         var info = SYSTEM_INFO()
         GetNativeSystemInfo(&info)
-        _architecture = Architecture.fromSystem(info.wProcessorArchitecture)
+        _architecture = Architecture(info.wProcessorArchitecture)
       }
 
       return _architecture!
