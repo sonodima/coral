@@ -12,8 +12,6 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-// TODO: If you are bored you could consider moving this to be an iterator... Or not.
-
 internal final class PatternLexer {
   private let _string: String
   private var _index: String.Index

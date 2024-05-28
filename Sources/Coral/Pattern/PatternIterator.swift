@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public class PatternIterator: Sequence, IteratorProtocol {
+public final class PatternIterator: Sequence, IteratorProtocol {
   private let _pattern: Pattern
   private let _data: ContiguousArray<UInt8>
   private var _i: Int = 0
@@ -44,7 +44,7 @@ public class PatternIterator: Sequence, IteratorProtocol {
   }
 }
 
-public class PointerPatternIterator: Sequence, IteratorProtocol {
+public final class PointerPatternIterator: Sequence, IteratorProtocol {
   private var _iterator: PatternIterator
   private var _base: RawPointer
 

@@ -16,7 +16,7 @@
 
   import WinSDK
 
-  public class OsProcessIterator: __OsProcessIterator_Shared {
+  public final class OsProcessIterator: __OsProcessIterator_Shared {
     private let _snapshot: HANDLE
     private var _entry: PROCESSENTRY32W
     private var _done: Bool = false
