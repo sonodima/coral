@@ -14,5 +14,5 @@
 
 public protocol __Input_Shared {
   static func isDown(key: Key) -> Bool?
-  static func moveMouse(to point: Point2D)
+  static func moveMouse(to point: PointD)
 }

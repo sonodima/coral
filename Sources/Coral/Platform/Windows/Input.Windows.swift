@@ -25,7 +25,7 @@
       }
     }
 
-    public static func moveMouse(to point: Point2D) {
+    public static func moveMouse(to point: PointD) {
       var input = INPUT()
       input.type = DWORD(INPUT_MOUSE)
       

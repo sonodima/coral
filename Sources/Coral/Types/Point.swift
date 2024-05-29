@@ -12,7 +12,9 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public struct Point2<T: Numeric> {
+public struct Point<T: Numeric> {
+  public typealias Element = T
+
   public var x: T
   public var y: T
 
@@ -22,6 +24,6 @@ public struct Point2<T: Numeric> {
   }
 }
 
-public typealias Point2I = Point2<Int>
-public typealias Point2F = Point2<Float>
-public typealias Point2D = Point2<Double>
+public typealias PointI = Point<Int>
+public typealias PointF = Point<Float>
+public typealias PointD = Point<Double>
