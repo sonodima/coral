@@ -40,8 +40,7 @@ public struct Pattern {
   }
 
   public func find(in data: ContiguousArray<UInt8>) -> Int? {
-    var iterator = scan(in: data)
-    return iterator.next()
+    scan(in: data).next()
   }
 }
 
