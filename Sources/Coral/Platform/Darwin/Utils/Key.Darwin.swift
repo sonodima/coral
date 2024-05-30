@@ -12,23 +12,18 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-import Foundation
+#if os(macOS)
 
-public protocol __Platform_Shared {
-  static var pageSize: UInt { get }
-  static var architecture: Architecture { get }
-}
+  import CoreGraphics
+  import Carbon
 
-extension __Platform_Shared {
-  public static func alignStart(_ value: UInt) -> UInt {
-    value & ~(pageSize - 1)
+  extension Key {
+    internal var system: CGKeyCode? {
+      switch self {
+      case .space: return CGKeyCode(kVK_Space)
+      default: return nil
+      }
+    }
   }
 
-  public static func alignEnd(_ value: UInt) -> UInt {
-    alignStart(value + (pageSize - 1))
-  }
-
-  public static var isElevated: Bool? {
-    OsProcess.local.isElevated
-  }
-}
+#endif

@@ -12,6 +12,22 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public protocol __Time_Shared {
-  static func sleep(for duration: TimeDuration)
-}
+#if os(macOS)
+
+  import Darwin
+
+  extension Architecture {
+    internal init(_ value: cpu_type_t) {
+      self = switch value {
+      case CPU_TYPE_X86_64: .x86_64
+      case CPU_TYPE_X86: .x86
+      case CPU_TYPE_ARM64: .arm64
+      case CPU_TYPE_ARM: .arm
+      // TODO: Should we add a case for arm64e? We would need to use the hw.cpusubtype
+      //       sysctl to fetch it.
+      default: .unknown
+      }
+    }
+  }
+
+#endif

@@ -94,6 +94,7 @@ extension MemRange: CustomDebugStringConvertible {
 
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
+    formatter.allowsNonnumericFormatting = false
     formatter.countStyle = .memory
     let size = formatter.string(fromByteCount: Int64(size))
 
@@ -107,6 +108,7 @@ extension MemRange: CustomStringConvertible {
 
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
+    formatter.allowsNonnumericFormatting = false
     formatter.countStyle = .memory
     let size = formatter.string(fromByteCount: Int64(size))
 

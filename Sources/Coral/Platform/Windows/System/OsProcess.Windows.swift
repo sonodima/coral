@@ -30,15 +30,14 @@
     public let id: UInt
     public let name: String?
     public let architecture: Architecture
-    public let _startTime: UInt64?
-
-    private var _path: URL?
+    private let _startTime: UInt64?
 
     public lazy var mainModule: ProcessModule? = {
       // On NT-based systems, the main module is the first module in the list.
       try? modules().first
     }()
 
+    private var _path: URL?
     public var path: URL? {
       mutating get {
         let access = DWORD(PROCESS_QUERY_LIMITED_INFORMATION)
@@ -134,6 +133,10 @@
 
       architecture = Self.architectureImpl(for: handle)
       _startTime = Self.startTimeImpl(for: handle)
+    }
+
+    public func iterateModules() throws -> ProcessModuleIterator {
+      try ProcessModuleIterator(id: id)
     }
 
     private static func pathImpl(for handle: HANDLE) -> URL? {

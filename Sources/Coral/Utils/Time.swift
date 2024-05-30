@@ -12,8 +12,6 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public protocol __Input_Shared {
-  static func isDown(key: Key) -> Bool?
-  static func moveMouse(to point: Vector2D)
-  static func moveMouse(by delta: Vector2D)
+public protocol __Time_Shared {
+  static func sleep(for span: TimeSpan)
 }

@@ -34,9 +34,7 @@
 
     deinit {
       if _handle != INVALID_HANDLE_VALUE && _handle != GetCurrentProcess() {
-        if CloseHandle(_handle) {
-          _handle = INVALID_HANDLE_VALUE
-        }
+        CloseHandle(_handle)
       }
     }
 
@@ -49,17 +47,31 @@
         return 0
       }
 
-      var bytesRead: UInt = 0
       // Limit the size to prevent overflow on the address.
       let size = min(UInt.max - dest, UInt(buffer.count))
 
+      // Attempt a single read for the entire buffer. If we are lucky, we will avoid
+      // the massive overhead of reading page by page.
+      var curBytesRead: SIZE_T = 0
+      if ReadProcessMemory(
+        _handle,
+        LPCVOID(bitPattern: address),
+        LPVOID(bitPattern: dest),
+        SIZE_T(size),
+        &curBytesRead
+      ) {
+        return UInt(curBytesRead)
+      }
+
+      // Unfortunate! The single read failed, so we will read in chunks to get as much
+      // data as possible.
+      var bytesRead: UInt = 0
       while bytesRead < size {
         let chunkAddress = address + bytesRead
         let pageAddress = Platform.alignStart(chunkAddress)
         let pageOffset = chunkAddress - pageAddress
         let chunkSize = min(size - bytesRead, Platform.pageSize - pageOffset)
 
-        var curBytesRead: SIZE_T = 0
         if ReadProcessMemory(
           _handle,
           LPCVOID(bitPattern: chunkAddress),

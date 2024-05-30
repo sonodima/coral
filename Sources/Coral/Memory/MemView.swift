@@ -35,6 +35,10 @@ extension MemView {
     RawPointer(view: self, to: address)
   }
 
+  public func ptr<T>(to address: UInt, for type: T.Type = T.self) -> Pointer<T> {
+    Pointer(view: self, to: address)
+  }
+
   public func range(from module: ProcessModule) -> MemRange {
     ptr(to: module.base).toRange(size: module.size)
   }

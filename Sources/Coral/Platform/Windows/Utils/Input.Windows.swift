@@ -25,7 +25,7 @@
       }
     }
 
-    public static func moveMouse(to point: Vector2D) {
+    public static func moveMouse(to point: Vector2D) -> Bool {
       var scaled = point * 65536
       scaled.x /= Double(GetSystemMetrics(SM_CXSCREEN))
       scaled.y /= Double(GetSystemMetrics(SM_CYSCREEN))
@@ -36,17 +36,17 @@
       input.mi.dx = LONG(scaled.x)
       input.mi.dy = LONG(scaled.y)
       let size = MemoryLayout<INPUT>.size
-      SendInput(1, &input, Int32(size))
+      return SendInput(1, &input, Int32(size)) != 0
     }
 
-    public static func moveMouse(by delta: Vector2D) {
+    public static func moveMouse(by delta: Vector2D) -> Bool {
       var input = INPUT()
       input.type = DWORD(INPUT_MOUSE)
       input.mi.dwFlags = DWORD(MOUSEEVENTF_MOVE)
       input.mi.dx = LONG(delta.x)
       input.mi.dy = LONG(delta.y)
       let size = MemoryLayout<INPUT>.size
-      SendInput(1, &input, Int32(size))
+      return SendInput(1, &input, Int32(size)) != 0
     }
   }
 

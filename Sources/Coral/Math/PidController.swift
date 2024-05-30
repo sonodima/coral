@@ -30,12 +30,10 @@ public final class PidController {
     self.damp = damp
   }
 
-  public func step(duration: Duration, error: Double) -> Double {
-    let millis = Double(duration.components.seconds) * 1000.0
-      + Double(duration.components.attoseconds) * 1e-15
-    let d = (error - _prevError) / millis
+  public func step(span: TimeSpan, error: Double) -> Double {
+    let d = (error - _prevError) / span.millis
     _prevError = error
-    _integral += error * millis
+    _integral += error * span.millis
     if error * _integral < 0.0 {
       _integral *= damp
     }

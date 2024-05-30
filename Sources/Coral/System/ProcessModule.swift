@@ -17,11 +17,13 @@ import Foundation
 public struct ProcessModule {
   public let base: UInt
   public let size: UInt
+  public let path: URL?
   public let name: String?
 
-  internal init(base: UInt, size: UInt, name: String?) {
+  internal init(base: UInt, size: UInt, path: URL?, name: String?) {
     self.base = base
     self.size = size
+    self.path = path
     self.name = name
   }
 }
@@ -44,6 +46,7 @@ extension ProcessModule: CustomDebugStringConvertible {
   public var debugDescription: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
+    formatter.allowsNonnumericFormatting = false
     formatter.countStyle = .memory
 
     let base = String(base, radix: 16, uppercase: true)
@@ -57,6 +60,7 @@ extension ProcessModule: CustomStringConvertible {
   public var description: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
+    formatter.allowsNonnumericFormatting = false
     formatter.countStyle = .memory
 
     let base = String(base, radix: 16, uppercase: true)

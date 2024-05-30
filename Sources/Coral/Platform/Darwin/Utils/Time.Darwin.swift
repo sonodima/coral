@@ -12,23 +12,23 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-import Foundation
+#if os(macOS)
 
-public protocol __Platform_Shared {
-  static var pageSize: UInt { get }
-  static var architecture: Architecture { get }
-}
+  import Darwin
+  import Foundation
 
-extension __Platform_Shared {
-  public static func alignStart(_ value: UInt) -> UInt {
-    value & ~(pageSize - 1)
+  public struct Time: __Time_Shared {
+    public static func sleep(for span: TimeSpan) {
+      var info = mach_timebase_info_data_t()
+      if mach_timebase_info(&info) == KERN_SUCCESS {
+        let ttw = span.nanos * UInt64(info.denom) / UInt64(info.numer)
+        if mach_wait_until(mach_absolute_time() + ttw) == KERN_SUCCESS {
+          return
+        }
+      }
+
+      Thread.sleep(forTimeInterval: TimeInterval(span.secs))
+    }
   }
 
-  public static func alignEnd(_ value: UInt) -> UInt {
-    alignStart(value + (pageSize - 1))
-  }
-
-  public static var isElevated: Bool? {
-    OsProcess.local.isElevated
-  }
-}
+#endif

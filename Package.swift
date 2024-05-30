@@ -26,6 +26,8 @@ var linkerSettings: [LinkerSetting] {
 #endif
 }
 
+
+
 let package = Package(
   name: "Coral",
   products: [
@@ -36,8 +38,14 @@ let package = Package(
   ],
   targets: [
     .target(
+      name: "CDyld",
+      path: "Sources/CDyld"),
+
+    .target(
       name: "Coral",
+      dependencies: ["CDyld"],
       linkerSettings: linkerSettings),
+
     .executableTarget(
       name: "Example_Junkyard",
       dependencies: ["Coral"],

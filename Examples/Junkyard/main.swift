@@ -13,21 +13,3 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 import Coral
-
-Time.increasePrecision()
-defer { Time.restorePrecision() }
-
-print("Sleeping for 1 second...")
-Time.sleep(for: .millis(1000))
-print("Done!")
-
-let view = try MemView_Local()
-let allocation = view.allocate(size: 0x1000, protection: .rw)!
-let pointer = allocation[0x50]!.typed(UInt.self)
-
-pointer.write(value: 0x1234)
-if let value = pointer.read() {
-  print(value)
-}
-
-

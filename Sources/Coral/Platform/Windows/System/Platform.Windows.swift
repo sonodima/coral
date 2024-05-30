@@ -12,23 +12,32 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-import Foundation
+#if os(Windows)
 
-public protocol __Platform_Shared {
-  static var pageSize: UInt { get }
-  static var architecture: Architecture { get }
-}
+  import WinSDK
 
-extension __Platform_Shared {
-  public static func alignStart(_ value: UInt) -> UInt {
-    value & ~(pageSize - 1)
+  public struct Platform: __Platform_Shared {
+    private static var _pageSize: UInt?
+    public static var pageSize: UInt {
+      if _pageSize == nil {
+        var info = SYSTEM_INFO()
+        GetSystemInfo(&info)
+        _pageSize = UInt(info.dwPageSize)
+      }
+
+      return _pageSize!
+    }
+
+    private static var _architecture: Architecture?
+    public static var architecture: Architecture {
+      if _architecture == nil {
+        var info = SYSTEM_INFO()
+        GetNativeSystemInfo(&info)
+        _architecture = Architecture(info.wProcessorArchitecture)
+      }
+
+      return _architecture!
+    }
   }
 
-  public static func alignEnd(_ value: UInt) -> UInt {
-    alignStart(value + (pageSize - 1))
-  }
-
-  public static var isElevated: Bool? {
-    OsProcess.local.isElevated
-  }
-}
+#endif

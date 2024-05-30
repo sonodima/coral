@@ -31,6 +31,8 @@ public protocol __OsProcess_Shared:
 
   init?(id: UInt)
   init?(name: String) throws
+
+  func iterateModules() throws -> ProcessModuleIterator
 }
 
 extension __OsProcess_Shared {
@@ -48,10 +50,6 @@ extension __OsProcess_Shared {
 
   public static func all(name: String) throws -> [OsProcess] {
     try iterate().filter { $0.name == name }
-  }
-
-  public func iterateModules() throws -> ProcessModuleIterator {
-    try ProcessModuleIterator(id: id)
   }
 
   public func modules() throws -> [ProcessModule] {

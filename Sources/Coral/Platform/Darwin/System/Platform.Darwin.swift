@@ -12,35 +12,29 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-#if os(Windows)
+#if os(macOS)
 
-  import WinSDK
+  import Darwin
 
   public struct Platform: __Platform_Shared {
-    private static var _pageSize: UInt?
     public static var pageSize: UInt {
-      if _pageSize == nil {
-        var info = SYSTEM_INFO()
-        GetSystemInfo(&info)
-        _pageSize = UInt(info.dwPageSize)
-      }
-
-      return _pageSize!
+      UInt(vm_page_size)
     }
 
     private static var _architecture: Architecture?
     public static var architecture: Architecture {
       if _architecture == nil {
-        var info = SYSTEM_INFO()
-        GetNativeSystemInfo(&info)
-        _architecture = Architecture(info.wProcessorArchitecture)
+        var value = cpu_type_t()
+        var size = MemoryLayout<cpu_type_t>.size
+        let result = sysctlbyname("hw.cputype", &value, &size, nil, 0)
+        guard result != -1 else {
+          return Architecture.unknown
+        }
+
+        _architecture = Architecture(value)
       }
 
       return _architecture!
-    }
-
-    public static var isElevated: Bool? {
-      OsProcess.local.isElevated
     }
   }
 
