@@ -29,6 +29,14 @@ public struct RawPointer {
     self.address = address
   }
 
+  public func deref() -> RawPointer? {
+    view.read(from: address, as: RawPointer.self)
+  }
+
+  public func deref<T>(as type: T.Type = T.self) -> Pointer<T>? {
+    view.read(from: address, as: Pointer<T>.self)
+  }
+
   @discardableResult
   public func read(into buffer: UnsafeMutableRawBufferPointer) -> UInt {
     view.read(from: address, into: buffer)
@@ -39,12 +47,12 @@ public struct RawPointer {
     view.write(to: address, data: data)
   }
 
-  public func read<T>(as type: T.Type = Self.self) -> T? {
+  public func read<T>(as type: T.Type = T.self) -> T? {
     view.read(from: address, as: type)
   }
 
   @discardableResult
-  public func write<T>(value: T, as type: T.Type = Self.self) -> Bool {
+  public func write<T>(value: T, as type: T.Type = T.self) -> Bool {
     view.write(to: address, value: value, as: type)
   }
 
@@ -62,8 +70,7 @@ public struct RawPointer {
   }
 
   @discardableResult
-  public func write<T>(
-    value: Pointer<T>,
+  public func write<T>(value: Pointer<T>,
     as type: Pointer<T>.Type = Pointer<T>.self
   ) -> Bool {
     view.write(to: address, value: value, as: type)
@@ -117,7 +124,7 @@ public struct RawPointer {
     Pointer(raw: self, for: type)
   }
 
-  public func map<T>(_ lambda: (Self) -> T) -> T {
+  public func to<T>(_ lambda: (Self) -> T) -> T {
     lambda(self)
   }
 

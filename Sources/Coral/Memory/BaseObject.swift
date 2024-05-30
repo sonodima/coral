@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
-public class BaseObject {
+open class BaseObject {
   public let pointer: RawPointer
 
   public var view: any MemView {
@@ -28,11 +28,11 @@ public class BaseObject {
   }
 
   @discardableResult
-  public func update() -> Self {
+  open func update() -> Self {
     return self
   }
 
-  public func map<T>(_ lambda: (RawPointer) -> T) -> T {
+  public func to<T>(_ lambda: (RawPointer) -> T) -> T {
     lambda(pointer)
   }
 }

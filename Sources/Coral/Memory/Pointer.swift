@@ -12,6 +12,9 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
+// TODO: Consider adding support for pointer chaining: Pointer<Pointer<T>>
+//       This would probably require a runtime check though, so we should benchmark it!
+
 public struct Pointer<T> {
   public var raw: RawPointer
 

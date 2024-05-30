@@ -31,6 +31,10 @@ public protocol MemView {
 }
 
 extension MemView {
+  public func range(from module: ProcessModule) -> MemRange {
+    ptr(to: module.base).toRange(size: module.size)
+  }
+
   public func ptr(to address: UInt) -> RawPointer {
     RawPointer(view: self, to: address)
   }
@@ -39,8 +43,12 @@ extension MemView {
     Pointer(view: self, to: address)
   }
 
-  public func range(from module: ProcessModule) -> MemRange {
-    ptr(to: module.base).toRange(size: module.size)
+  public func deref(at address: UInt) -> RawPointer? {
+    read(from: address, as: RawPointer.self)
+  }
+
+  public func deref<T>(at address: UInt, as type: T.Type = T.self) -> Pointer<T>? {
+    read(from: address, as: Pointer<T>.self)
   }
 
   public func read<T>(from address: UInt, as type: T.Type = T.self) -> T? {
@@ -219,11 +227,11 @@ extension MemView {
     return write(to: address, array: encoded) == encoded.count
   }
 
-  public subscript(address: UInt) -> RawPointer {
-    ptr(to: address)
-  }
-
   public subscript(module: ProcessModule) -> MemRange {
     range(from: module)
+  }
+
+  public subscript(address: UInt) -> RawPointer {
+    ptr(to: address)
   }
 }

@@ -16,7 +16,7 @@
 
   import Darwin
 
-  public class MemView_User: __MemView_User_Shared {
+  open class MemView_User: __MemView_User_Shared {
     internal var task = mach_port_name_t(MACH_PORT_NULL)
 
     required public init(for process: OsProcess) throws {
@@ -38,7 +38,7 @@
     }
 
     @discardableResult
-    public func read(
+    open func read(
       from address: UInt,
       into buffer: UnsafeMutableRawBufferPointer
     ) -> UInt {
@@ -90,7 +90,7 @@
     }
 
     @discardableResult
-    public func write(to address: UInt, data: UnsafeRawBufferPointer) -> UInt {
+    open func write(to address: UInt, data: UnsafeRawBufferPointer) -> UInt {
       guard let src = data.baseAddress else {
         return 0
       }
@@ -103,7 +103,7 @@
       ) == KERN_SUCCESS ? UInt(bitPattern: data.count) : 0
     }
 
-    public func allocate(
+    open func allocate(
       at address: UInt? = nil,
       size: UInt = Platform.pageSize,
       protection: Protection
@@ -130,7 +130,7 @@
     }
 
     @discardableResult
-    public func free(from address: UInt, size: UInt) -> Bool {
+    open func free(from address: UInt, size: UInt) -> Bool {
       mach_vm_deallocate(
         task,
         mach_vm_address_t(address),
@@ -139,7 +139,7 @@
     }
 
     @discardableResult
-    public func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
+    open func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
       // TODO: Check frida-gum's gum_mach_vm_protect, as they manually uses the
       //       vm_protect trap from assembly. The same is also done in Substrate.
       //       Maybe it is only required on iOS?
@@ -152,7 +152,7 @@
       ) == KERN_SUCCESS
     }
 
-    public func protection(at address: UInt) -> Protection? {
+    open func protection(at address: UInt) -> Protection? {
       var startAddress = mach_vm_address_t(address)
       var objectName = mach_port_t()
 

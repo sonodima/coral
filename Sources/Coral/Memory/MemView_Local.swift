@@ -16,7 +16,7 @@
 
   import Foundation
 
-  public class MemView_Local: MemView {
+  open class MemView_Local: MemView {
     private let _userView: MemView_User
 
     public init() throws {
@@ -24,7 +24,7 @@
     }
 
     @discardableResult
-    public func read(
+    open func read(
       from address: UInt,
       into buffer: UnsafeMutableRawBufferPointer
     ) -> UInt {
@@ -39,7 +39,7 @@
     }
 
     @discardableResult
-    public func write(
+    open func write(
       to address: UInt,
       data: UnsafeRawBufferPointer
     ) -> UInt {
@@ -53,7 +53,7 @@
       }
     }
 
-    public func allocate(
+    open func allocate(
       at address: UInt? = nil,
       size: UInt = Platform.pageSize,
       protection: Protection
@@ -62,16 +62,16 @@
     }
 
     @discardableResult
-    public func free(from address: UInt, size: UInt) -> Bool {
+    open func free(from address: UInt, size: UInt) -> Bool {
       _userView.free(from: address, size: size)
     }
 
     @discardableResult
-    public func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
+    open func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
       _userView.protect(at: address, size: size, value: value)
     }
 
-    public func protection(at address: UInt) -> Protection? {
+    open func protection(at address: UInt) -> Protection? {
       _userView.protection(at: address)
     }
   }

@@ -16,7 +16,7 @@
 
   import WinSDK
 
-  public class Input: __Input_Shared {
+  public final class Input: __Input_Shared {
     public static func isDown(key: Key) -> Bool? {
       if let code = key.system {
         GetAsyncKeyState(code) & (1 << 15) != 0

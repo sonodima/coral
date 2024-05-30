@@ -16,7 +16,7 @@
 
   import WinSDK
 
-  public class MemView_User: __MemView_User_Shared {
+  open class MemView_User: __MemView_User_Shared {
     private var _handle: HANDLE
 
     required public init(for process: OsProcess) throws {
@@ -39,7 +39,7 @@
     }
 
     @discardableResult
-    public func read(
+    open func read(
       from address: UInt,
       into buffer: UnsafeMutableRawBufferPointer
     ) -> UInt {
@@ -89,7 +89,7 @@
     }
 
     @discardableResult
-    public func write(to address: UInt, data: UnsafeRawBufferPointer) -> UInt {
+    open func write(to address: UInt, data: UnsafeRawBufferPointer) -> UInt {
       guard let src = data.baseAddress else {
         return 0
       }
@@ -105,7 +105,7 @@
       return UInt(bytesWritten)
     }
 
-    public func allocate(
+    open func allocate(
       at address: UInt? = nil,
       size: UInt = Platform.pageSize,
       protection: Protection
@@ -124,7 +124,7 @@
     }
 
     @discardableResult
-    public func free(from address: UInt, size: UInt) -> Bool {
+    open func free(from address: UInt, size: UInt) -> Bool {
       VirtualFreeEx(
         _handle,
         LPVOID(bitPattern: address),
@@ -133,7 +133,7 @@
     }
 
     @discardableResult
-    public func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
+    open func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
       var _oldValue: DWORD = 0
       return VirtualProtectEx(
         _handle,
@@ -143,7 +143,7 @@
         &_oldValue)
     }
 
-    public func protection(at address: UInt) -> Protection? {
+    open func protection(at address: UInt) -> Protection? {
       var info = MEMORY_BASIC_INFORMATION()
       let size = MemoryLayout<MEMORY_BASIC_INFORMATION>.size
       return VirtualQueryEx(
