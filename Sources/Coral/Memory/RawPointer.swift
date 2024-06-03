@@ -325,17 +325,17 @@ public struct RawPointer {
   /// Converts this pointer to another type, using the provided constructor function.
   ///
   /// If the target type `T` has a constructor or a factory method that accepts a single
-  /// ``Pointer`` argument, you can use the following simplified syntax:
+  /// ``RawPointer`` argument, you can use the following simplified syntax:
   ///
   /// ```swift
-  /// ptr.into(Player.init)
+  /// ptr.to(Player.init)
   /// ```
   ///
   /// This approach to conversion is very flexible, because it even allows the usage
   /// of fallible constructor methods, that may return `nil`.
   ///
   /// ```swift
-  /// ptr.into(Player.tryFromPointer)?.health
+  /// ptr.to(Player.tryFromPointer)?.health
   /// ```
   @inlinable
   @inline(__always)

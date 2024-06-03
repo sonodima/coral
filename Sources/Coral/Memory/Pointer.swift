@@ -94,7 +94,7 @@ public struct Pointer<T>: __SomePointer {
   @inlinable
   @inline(__always)
   public func offset(_ value: Int) -> Pointer {
-    Self(raw: raw.offset(value))
+    Pointer(raw: raw.offset(value))
   }
 
   /// Returns a ``Pointer`` to the instance of `T` pointed to by `self`, incremented by
@@ -102,7 +102,7 @@ public struct Pointer<T>: __SomePointer {
   @inlinable
   @inline(__always)
   public func adding(_ value: UInt) -> Pointer {
-    Self(raw: raw.adding(value))
+    Pointer(raw: raw.adding(value))
   }
 
   /// Returns a ``Pointer`` to the instance of `T` pointed to by `self`, decremented by
@@ -110,7 +110,7 @@ public struct Pointer<T>: __SomePointer {
   @inlinable
   @inline(__always)
   public func subtracting(_ value: UInt) -> Pointer {
-    Self(raw: raw.subtracting(value))
+    Pointer(raw: raw.subtracting(value))
   }
 
   /// Adds `value` to the address of the pointer.

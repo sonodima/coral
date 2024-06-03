@@ -90,7 +90,7 @@ public struct MemRange {
   /// otherwise, `false`.
   @inlinable
   @inline(__always)
-  public func contains(_ other: Self) -> Bool {
+  public func contains(_ other: MemRange) -> Bool {
     other.base >= base && other.base.address + other.size <= base.address + size
   }
 
@@ -115,7 +115,7 @@ extension MemRange: Equatable {
   /// Returns `true` if the two ranges are equal; otherwise, `false`.
   @inlinable
   @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  public static func == (lhs: MemRange, rhs: MemRange) -> Bool {
     lhs.base == rhs.base && lhs.size == rhs.size
   }
 }

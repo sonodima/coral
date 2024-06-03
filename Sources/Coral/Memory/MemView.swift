@@ -213,7 +213,7 @@ extension MemView {
     maxCount: UInt,
     of type: T.Type = T.self
   ) -> ContiguousArray<T> {
-    assert(_isPOD(T.self), "Reading non-trivial types is unsafe and not supported!")
+    assert(_isPOD(type), "Reading non-trivial types is unsafe and not supported!")
 
     // Because the array allocates a contiguous memory buffer, we can safely read
     // directly into it.
@@ -243,7 +243,7 @@ extension MemView {
     array: ContiguousArray<T>,
     of type: T.Type = T.self
   ) -> UInt {
-    assert(_isPOD(T.self), "Writing non-trivial types is unsafe and not supported!")
+    assert(_isPOD(type), "Writing non-trivial types is unsafe and not supported!")
 
     let stride = UInt(MemoryLayout<T>.stride)
     return if stride > 0 {
