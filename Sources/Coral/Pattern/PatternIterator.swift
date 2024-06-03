@@ -12,22 +12,31 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
+/// An iterator that scans a data buffer for a pattern, returning the indices of
+/// its occurrences.
 public final class PatternIterator: Sequence, IteratorProtocol {
   private let _pattern: Pattern
   private let _data: ContiguousArray<UInt8>
-  private var _i: Int = 0
+  private var _i: UInt = 0
 
   internal init(pattern: Pattern, in data: ContiguousArray<UInt8>) {
     _pattern = pattern
     _data = data
   }
 
-  public func next() -> Int? {
-    var result: Int? = nil
-    while _i < _data.count - _pattern.data.count && result == nil {
+  /// Searches for the next occurrence of the pattern in the data.
+  /// 
+  /// - Returns: The index of the next occurrence of the pattern in the data if
+  ///            found; otherwise, `nil`.
+  /// 
+  /// - Complexity: O(n * m), where `n` is the length of the data and `m` is the
+  ///               length of the pattern.
+  public func next() -> UInt? {
+    var result: UInt? = nil
+    while _i <= _data.count - _pattern.data.count && result == nil {
       var found = true
       for j in 0..<_pattern.data.count {
-        if let byte = _pattern.data[j], byte != _data[_i + j] {
+        if let byte = _pattern.data[j], byte != _data[Int(_i) + j] {
           found = false
           break
         }
@@ -44,6 +53,8 @@ public final class PatternIterator: Sequence, IteratorProtocol {
   }
 }
 
+/// An iterator that scans a data buffer for a pattern, returning the pointers to
+/// its occurrences relative to a base pointer.
 public final class PointerPatternIterator: Sequence, IteratorProtocol {
   private var _iterator: PatternIterator
   private var _base: RawPointer
@@ -53,7 +64,14 @@ public final class PointerPatternIterator: Sequence, IteratorProtocol {
     _base = base
   }
 
+  /// Searches for the next occurrence of the pattern in the data.
+  /// 
+  /// - Returns: The pointer to the next occurrence of the pattern in the data if
+  ///            found; otherwise, `nil`.
+  /// 
+  /// - Complexity: O(n * m), where `n` is the length of the data and `m` is the
+  ///               length of the pattern.
   public func next() -> RawPointer? {
-    _iterator.next().map { _base + UInt($0) }
+    _iterator.next().map(_base.adding)
   }
 }

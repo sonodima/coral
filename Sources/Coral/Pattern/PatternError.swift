@@ -14,12 +14,17 @@
 
 import Foundation
 
+/// An error that occurs when parsing a pattern.
 public enum PatternError: Error {
+  /// An unexpected character was found at the given index.
   case unexpectedCharacter(Int, Character)
+
+  /// The stream of characters ended unexpectedly.
   case endOfStream
 }
 
 extension PatternError: LocalizedError {
+  /// A localized message describing what error occurred.
   public var errorDescription: String? {
     switch self {
     case let .unexpectedCharacter(index, char):
