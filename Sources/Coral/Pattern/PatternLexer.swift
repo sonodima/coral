@@ -13,16 +13,16 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 internal final class PatternLexer {
-  private let _string: String
+  private let _input: String
   private var _index: String.Index
 
   internal var hasNext: Bool {
-    _index < _string.endIndex
+    _index < _input.endIndex
   }
 
-  internal init(with string: String) {
-    _string = string
-    _index = string.startIndex
+  internal init(input: String) {
+    _input = input
+    _index = input.startIndex
   }
 
   internal enum Token {
@@ -38,12 +38,12 @@ internal final class PatternLexer {
         return .endOfLine
       }
 
-      return switch _string[_index] {
+      return switch _input[_index] {
       case "?": try parseWildcard()
       case let char where char.isHexDigit: try parseByte()
       default:
-        let position = _string.distance(from: _string.startIndex, to: _index)
-        throw PatternError.unexpectedCharacter(position, _string[_index])
+        let position = _input.distance(from: _input.startIndex, to: _index)
+        throw PatternError.unexpectedCharacter(index: position, value: _input[_index])
       }
     }
 
@@ -51,14 +51,14 @@ internal final class PatternLexer {
   }
 
   private func advance() {
-    _index = _string.index(after: _index)
+    _index = _input.index(after: _index)
   }
 
   private func skipWhitespaceAndComments() {
     while hasNext {
-      if _string[_index].isWhitespace {
+      if _input[_index].isWhitespace {
         advance()
-      } else if _string[_index] == "#" {
+      } else if _input[_index] == "#" {
         skipLine()
       } else {
         break
@@ -67,7 +67,7 @@ internal final class PatternLexer {
   }
 
   private func skipLine() {
-    while hasNext && !_string[_index].isNewline {
+    while hasNext && !_input[_index].isNewline {
       advance()
     }
   }
@@ -78,9 +78,9 @@ internal final class PatternLexer {
       throw PatternError.endOfStream
     }
 
-    guard _string[_index] == "?" else {
-      let position = _string.distance(from: _string.startIndex, to: _index)
-      throw PatternError.unexpectedCharacter(position, _string[_index])
+    guard _input[_index] == "?" else {
+      let position = _input.distance(from: _input.startIndex, to: _index)
+      throw PatternError.unexpectedCharacter(index: position, value: _input[_index])
     }
 
     advance()
@@ -88,17 +88,17 @@ internal final class PatternLexer {
   }
 
   private func parseByte() throws -> Token {
-    let first = _string[_index]
+    let first = _input[_index]
 
     advance()
     guard hasNext else {
       throw PatternError.endOfStream
     }
 
-    let second = _string[_index]
+    let second = _input[_index]
     guard second.isHexDigit else {
-      let position = _string.distance(from: _string.startIndex, to: _index)
-      throw PatternError.unexpectedCharacter(position, second)
+      let position = _input.distance(from: _input.startIndex, to: _index)
+      throw PatternError.unexpectedCharacter(index: position, value: second)
     }
 
     advance()

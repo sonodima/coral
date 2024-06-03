@@ -17,7 +17,7 @@ import Foundation
 /// An error that occurs when parsing a pattern.
 public enum PatternError: Error {
   /// An unexpected character was found at the given index.
-  case unexpectedCharacter(Int, Character)
+  case unexpectedCharacter(index: Int, value: Character)
 
   /// The stream of characters ended unexpectedly.
   case endOfStream
@@ -27,8 +27,8 @@ extension PatternError: LocalizedError {
   /// A localized message describing what error occurred.
   public var errorDescription: String? {
     switch self {
-    case let .unexpectedCharacter(index, char):
-      "Unexpected character '\(char)' at index \(index)."
+    case let .unexpectedCharacter(index, value):
+      "Unexpected character '\(value)' at index \(index)."
     case .endOfStream:
       "Stream of characters ended unexpectedly."
     }

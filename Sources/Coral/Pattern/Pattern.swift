@@ -46,7 +46,7 @@ public struct Pattern {
   public init(from signature: String) throws {
     var data: [UInt8?] = []
 
-    let lexer = PatternLexer(with: signature)
+    let lexer = PatternLexer(input: signature)
     while lexer.hasNext {
       let token = try lexer.next()
       switch token {
@@ -96,7 +96,7 @@ extension Pattern: Hashable {
 }
 
 extension Pattern: CustomDebugStringConvertible {
-  /// Returns a textual representation of the pattern, suitable for debugging.
+  /// A textual representation of the pattern, suitable for debugging.
   public var debugDescription: String {
     let bytes = data.map {
       if let byte = $0 {
@@ -111,7 +111,7 @@ extension Pattern: CustomDebugStringConvertible {
 }
 
 extension Pattern: CustomStringConvertible {
-  /// Returns a textual representation of the pattern.
+  /// A textual representation of the pattern.
   public var description: String {
     data.map {
       if let byte = $0 {

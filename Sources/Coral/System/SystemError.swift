@@ -14,18 +14,18 @@
 
 import Foundation
 
+/// An error that occurs when a system operation fails.
 public enum SystemError: Error {
   case accessDenied
   case operationFailed
 }
 
 extension SystemError: LocalizedError {
+  /// A localized message describing what error occurred.
   public var errorDescription: String? {
     switch self {
-    case .accessDenied:
-      return "Access is denied."
-    case .operationFailed:
-      return "The operation failed."
+    case .accessDenied: "Access is denied."
+    case .operationFailed: "The operation failed."
     }
   }
 }

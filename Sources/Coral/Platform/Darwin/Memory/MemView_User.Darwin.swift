@@ -16,6 +16,8 @@
 
   import Darwin
 
+  /// An implementation of ``MemView`` that uses the system's user-mode APIs to perform
+  /// memory operations on a remote process.
   open class MemView_User: __MemView_User_Shared {
     internal var task = mach_port_name_t(MACH_PORT_NULL)
 
@@ -105,14 +107,14 @@
 
     open func allocate(
       at address: UInt? = nil,
-      size: UInt = Platform.pageSize,
+      byteCount: UInt = Platform.pageSize,
       protection: Protection
     ) -> MemRange? {
       var address = mach_vm_address_t(address ?? 0)
       if mach_vm_allocate(
         task,
         &address,
-        mach_vm_size_t(size),
+        mach_vm_size_t(byteCount),
         address == 0 ? VM_FLAGS_ANYWHERE : 0
       ) != KERN_SUCCESS {
         return nil
@@ -120,33 +122,33 @@
 
       // Allocation size is always rounded up to an integral number of pages.
       // The amount of memory allocated may be greater than the specified size.
-      let size = Platform.alignEnd(size)
-      if protect(at: UInt(address), size: size, value: protection) {
-        return ptr(to: UInt(address)).toRange(size: size)
+      let byteCount = Platform.alignEnd(byteCount)
+      if protect(at: UInt(address), byteCount: byteCount, value: protection) {
+        return ptr(to: UInt(address)).toRange(size: byteCount)
       } else {
-        free(from: UInt(address), size: size)
+        free(from: UInt(address), byteCount: byteCount)
         return nil
       }
     }
 
     @discardableResult
-    open func free(from address: UInt, size: UInt) -> Bool {
+    open func free(from address: UInt, byteCount: UInt) -> Bool {
       mach_vm_deallocate(
         task,
         mach_vm_address_t(address),
-        mach_vm_size_t(size)
+        mach_vm_size_t(byteCount)
       ) == KERN_SUCCESS
     }
 
     @discardableResult
-    open func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
+    open func protect(at address: UInt, byteCount: UInt, value: Protection) -> Bool {
       // TODO: Check frida-gum's gum_mach_vm_protect, as they manually uses the
       //       vm_protect trap from assembly. The same is also done in Substrate.
       //       Maybe it is only required on iOS?
       mach_vm_protect(
         task,
         mach_vm_address_t(address),
-        mach_vm_size_t(size),
+        mach_vm_size_t(byteCount),
         0 /* FALSE */,
         value.system
       ) == KERN_SUCCESS

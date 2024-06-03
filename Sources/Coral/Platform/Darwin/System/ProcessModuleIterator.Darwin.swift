@@ -19,6 +19,10 @@
 
   import CDyld
 
+  /// An iterator over the loaded modules of a process.
+  ///
+  /// Depending on the internal implementation, the iterator may load all modules at
+  /// once or lazily.
   public final class ProcessModuleIterator: __ProcessModuleIterator_Shared {
     private let _view: MemView_User
     private let _imageInfos: ContiguousArray<dyld_image_info>
@@ -50,7 +54,7 @@
 
       _imageInfos = view.read(
         from: UInt(bitPattern: allImageInfo.infoArray),
-        count: Int(allImageInfo.infoArrayCount))
+        maxCount: UInt(allImageInfo.infoArrayCount))
       _view = view
     }
 
@@ -65,10 +69,10 @@
 
     /// Internal function to get the last module in the list. We use this to quickly
     /// get the main module for the process.
-    /// 
+    ///
     /// Although I did extensive testing and the last module is always the main module,
     /// I have not found any documentation that guarantees this.
-    /// 
+    ///
     /// If it turns out that this is not the case, we will have to look for the first
     /// module that has `filetype == MH_EXECUTE` _(booo, iteration is slow!)_
     internal func last() -> ProcessModule? {
@@ -86,14 +90,14 @@
       if let address = imageInfo.imageFilePath {
         let rawPath = _view.read(
           from: UInt(bitPattern: address),
-          chars: Int(PATH_MAX),
+          maxChars: UInt(PATH_MAX),
           encoding: Unicode.ASCII.self,
           zeroTerm: true)
         path = URL.init(fileURLWithPath: rawPath)
       }
 
       let imageLoadAddress = UInt(bitPattern: imageInfo.imageLoadAddress)
-      let header = _view.ptr(to: imageLoadAddress, for: mach_header_64.self)
+      let header = _view.ptr(to: imageLoadAddress).typed(as: mach_header_64.self)
       return ProcessModule(
         base: imageLoadAddress,
         size: Self.sizeOfImage(header: header),
@@ -108,7 +112,7 @@
       var plc = header.raw.offset(headerSize)
 
       var size: UInt = 0x1000
-      guard let header = header.read() else {
+      guard let header = header.deref() else {
         return size
       }
 

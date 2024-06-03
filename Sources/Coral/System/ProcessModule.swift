@@ -14,12 +14,27 @@
 
 import Foundation
 
+/// A module that is loaded into a process.
+/// 
+/// This structure only provides information about the module's memory and details.
+/// 
+/// To access its memory, you need to convert it to a ``MemRange``, feeding it to
+/// a ``MemView``.
 public struct ProcessModule {
+  /// The base address of the module.
   public let base: UInt
+  
+  /// The size of the module in bytes.
   public let size: UInt
+  
+  /// The full path to the module on disk, or `nil` if not available.
   public let path: URL?
+
+  /// The name of the module, or `nil` if not available.
   public let name: String?
 
+  @inlinable
+  @inline(__always)
   internal init(base: UInt, size: UInt, path: URL?, name: String?) {
     self.base = base
     self.size = size
@@ -29,20 +44,27 @@ public struct ProcessModule {
 }
 
 extension ProcessModule: Equatable {
+  /// Returns `true` if the components of the two modules are equal; otherwise, `false`.
+  @inlinable
+  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.base == rhs.base && lhs.size == rhs.size && lhs.name == rhs.name
+    lhs.base == rhs.base && lhs.size == rhs.size
+      && lhs.path == rhs.path && lhs.name == rhs.name
   }
 }
 
 extension ProcessModule: Hashable {
+  /// Hashes the essential components of the module into the given hasher.
   public func hash(into hasher: inout Hasher) {
     hasher.combine(base)
     hasher.combine(size)
+    hasher.combine(path)
     hasher.combine(name)
   }
 }
 
 extension ProcessModule: CustomDebugStringConvertible {
+  /// A textual representation of the module, suitable for debugging.
   public var debugDescription: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
@@ -57,6 +79,7 @@ extension ProcessModule: CustomDebugStringConvertible {
 }
 
 extension ProcessModule: CustomStringConvertible {
+  /// A textual representation of the module.
   public var description: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
@@ -65,7 +88,7 @@ extension ProcessModule: CustomStringConvertible {
 
     let base = String(base, radix: 16, uppercase: true)
     let size = formatter.string(fromByteCount: Int64(size))
-    let name = name != nil ? name! : "nil"
+    let name = name ?? "nil"
     return "ProcessModule - Base: \(base), Size: \(size), Name: \(name)"
   }
 }

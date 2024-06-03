@@ -13,5 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 public protocol __ProcessModuleIterator_Shared: Sequence, IteratorProtocol {
+  /// Returns the next instance of ``ProcessModule`` in the sequence, or `nil` if
+  /// there are no more modules.
   mutating func next() -> ProcessModule?
 }
