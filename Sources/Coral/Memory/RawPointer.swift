@@ -379,7 +379,7 @@ public struct RawPointer {
   @inlinable
   @inline(__always)
   public func adding(_ value: UInt) -> RawPointer {
-    RawPointer(view: view, to: address &+ value)
+    RawPointer(view: view, to: address + value)
   }
 
   /// Returns a ``RawPointer`` to the memory location pointed to by `self`, decremented
@@ -387,7 +387,7 @@ public struct RawPointer {
   @inlinable
   @inline(__always)
   public func subtracting(_ value: UInt) -> RawPointer {
-    RawPointer(view: view, to: address &- value)
+    RawPointer(view: view, to: address - value)
   }
 
   /// Adds `value` to the address of the pointer.
