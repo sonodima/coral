@@ -13,5 +13,6 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 public protocol __MemView_User_Shared: MemView {
+  /// Creates an instance that operates on the memory of the specified process.
   init(for process: OsProcess) throws
 }
