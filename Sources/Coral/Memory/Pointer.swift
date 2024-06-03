@@ -209,7 +209,7 @@ extension Pointer: Hashable {
 }
 
 extension Pointer: CustomDebugStringConvertible {
-  /// Returns a textual representation of the pointer, suitable for debugging.
+  /// A textual representation of the pointer, suitable for debugging.
   public var debugDescription: String {
     let address = String(address, radix: 16, uppercase: true)
     return "Pointer<\(T.self)>(0x\(address))"
@@ -217,7 +217,7 @@ extension Pointer: CustomDebugStringConvertible {
 }
 
 extension Pointer: CustomStringConvertible {
-  /// Returns a textual representation of the pointer.
+  /// A textual representation of the pointer.
   public var description: String {
     let address = String(address, radix: 16, uppercase: true)
     return "0x\(address)"

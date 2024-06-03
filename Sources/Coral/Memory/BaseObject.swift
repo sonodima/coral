@@ -85,7 +85,7 @@ extension BaseObject: Hashable {
 }
 
 extension BaseObject: CustomDebugStringConvertible {
-  /// Returns a textual representation of the object, suitable for debugging.
+  /// A textual representation of the object, suitable for debugging.
   public var debugDescription: String {
     let address = String(pointer.address, radix: 16, uppercase: true)
     return "\(type(of: self))(address: 0x\(address))"
@@ -93,7 +93,7 @@ extension BaseObject: CustomDebugStringConvertible {
 }
 
 extension BaseObject: CustomStringConvertible {
-  /// Returns a textual representation of the object.
+  /// A textual representation of the object.
   public var description: String {
     let address = String(pointer.address, radix: 16, uppercase: true)
     return "\(type(of: self)) - Address: 0x\(address)"

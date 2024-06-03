@@ -464,7 +464,7 @@ extension RawPointer: Hashable {
 }
 
 extension RawPointer: CustomDebugStringConvertible {
-  /// Returns a textual representation of the pointer, suitable for debugging.
+  /// A textual representation of the pointer, suitable for debugging.
   public var debugDescription: String {
     let address = String(address, radix: 16, uppercase: true)
     return "RawPointer(0x\(address))"
@@ -472,7 +472,7 @@ extension RawPointer: CustomDebugStringConvertible {
 }
 
 extension RawPointer: CustomStringConvertible {
-  /// Returns a textual representation of the pointer.
+  /// A textual representation of the pointer.
   public var description: String {
     let address = String(address, radix: 16, uppercase: true)
     return "0x\(address)"

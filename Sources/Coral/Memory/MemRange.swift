@@ -129,7 +129,7 @@ extension MemRange: Hashable {
 }
 
 extension MemRange: CustomDebugStringConvertible {
-  /// Returns a textual representation of the range, suitable for debugging.
+  /// A textual representation of the range, suitable for debugging.
   public var debugDescription: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
@@ -143,7 +143,7 @@ extension MemRange: CustomDebugStringConvertible {
 }
 
 extension MemRange: CustomStringConvertible {
-  /// Returns a textual representation of the range.
+  /// A textual representation of the range.
   public var description: String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = [.useTB, .useGB, .useMB, .useKB, .useBytes]
