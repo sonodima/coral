@@ -13,6 +13,9 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 /// A pointer to a memory location within a memory view.
+/// 
+/// The pointer does not own the memory it points to; it only provides an interface
+/// to interact with it.
 public struct RawPointer {
   /// The memory view that the pointer is associated with.
   public let view: any MemView

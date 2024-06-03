@@ -17,10 +17,14 @@ public protocol __SomePointer {
 }
 
 /// A typed pointer to an instance of `T` within a memory view.
+/// 
+/// The pointer does not own the memory it points to; it only provides an interface
+/// to interact with it.
 ///
 /// To avoid undefined behavior, the type `T` must be a trivial type that can be safely
 /// copied to a raw memory buffer.
 public struct Pointer<T>: __SomePointer {
+  /// The type of the instance that the pointer points to.
   public typealias Pointee = T
 
   /// The internal raw pointer that the pointer wraps.
