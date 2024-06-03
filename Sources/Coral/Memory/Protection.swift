@@ -12,11 +12,27 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
+/// The protection level of a memory region. 
 public enum Protection {
+  /// No access is allowed.
   case none
+  
+  /// Read-only access is allowed.
+  /// 
+  /// An attempt to write to the region will result in an access violation.
   case r
+
+  /// Execute-only access is allowed.
   case x
+
+  /// Read and write access is allowed.
   case rw
+
+  /// Read and execute access is allowed.
+  ///
+  /// An attempt to write to the region will result in an access violation.
   case rx
+
+  /// Read, write, and execute access is allowed.
   case rwx
 }
