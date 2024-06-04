@@ -18,7 +18,7 @@ public protocol __Platform_Shared {
   /// The size of a page in bytes on the system.
   static var pageSize: UInt { get }
 
-  /// The architecture of the system.
+  /// The processor architecture of the system.
   /// 
   /// This value may differ from the architecture of the current process, if it is
   /// running with emulation or compatibility layers.
@@ -42,7 +42,7 @@ extension __Platform_Shared {
   }
 
   /// A Boolean value indicating whether the current process is running with
-  /// elevated privileges.
+  /// elevated privileges, or `nil` if the information is not available.
   public static var isElevated: Bool? {
     OsProcess.local.isElevated
   }

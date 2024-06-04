@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
+/// The processor architecture of a system.
 public enum Architecture {
   case x86_64
   case x86

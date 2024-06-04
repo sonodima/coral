@@ -47,7 +47,7 @@ extension ProcessModule: Equatable {
   /// Returns `true` if the components of the two modules are equal; otherwise, `false`.
   @inlinable
   @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  public static func == (lhs: ProcessModule, rhs: ProcessModule) -> Bool {
     lhs.base == rhs.base && lhs.size == rhs.size
       && lhs.path == rhs.path && lhs.name == rhs.name
   }

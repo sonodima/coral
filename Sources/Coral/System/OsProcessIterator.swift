@@ -13,5 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 public protocol __OsProcessIterator_Shared: Sequence, IteratorProtocol {
+  /// Returns the next instance of ``OsProcess`` in the sequence, or `nil` if
+  /// there are no more processes.
   mutating func next() -> OsProcess?
 }
