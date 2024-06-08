@@ -17,16 +17,14 @@
 import PackageDescription
 
 var linkerSettings: [LinkerSetting] {
-#if os(Windows)
-  [
-    .linkedLibrary("ntdll"),
-  ]
-#else
-  []
-#endif
+  #if os(Windows)
+    [
+      .linkedLibrary("ntdll")
+    ]
+  #else
+    []
+  #endif
 }
-
-
 
 let package = Package(
   name: "Coral",
@@ -37,14 +35,7 @@ let package = Package(
       targets: ["Example_Junkyard"]),
   ],
   targets: [
-    .target(
-      name: "CDyld",
-      path: "Sources/CDyld"),
-
-    .target(
-      name: "Coral",
-      dependencies: ["CDyld"],
-      linkerSettings: linkerSettings),
+    .target(name: "Coral", linkerSettings: linkerSettings),
 
     .executableTarget(
       name: "Example_Junkyard",
@@ -52,3 +43,14 @@ let package = Package(
       path: "Examples/Junkyard"),
   ]
 )
+
+let coral = package.targets.first { $0.name == "Coral" }
+
+#if os(macOS)
+
+  package.targets.append(
+    .target(name: "CDyld", path: "Sources/CDyld"))
+
+  coral?.dependencies.append("CDyld")
+
+#endif
