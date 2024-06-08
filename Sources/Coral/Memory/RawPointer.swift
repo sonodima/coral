@@ -404,7 +404,7 @@ public struct RawPointer {
     address -= value
   }
 
-  /// Returns a ``RawPointer`` to the memory location pointed to by `self`, incremented
+  /// Returns a ``RawPointer`` to the memory location pointed to by `lhs`, incremented
   /// by `rhs` bytes.
   @inlinable
   @inline(__always)
@@ -412,7 +412,7 @@ public struct RawPointer {
     lhs.adding(rhs)
   }
 
-  /// Returns a ``RawPointer`` to the memory location pointed to by `self`, decremented
+  /// Returns a ``RawPointer`` to the memory location pointed to by `lhs`, decremented
   /// by `rhs` bytes.
   @inlinable
   @inline(__always)
@@ -420,14 +420,14 @@ public struct RawPointer {
     lhs.subtracting(rhs)
   }
 
-  /// Adds `rhs` to the address of the pointer.
+  /// Adds `rhs` to the address of the `lhs` pointer.
   @inlinable
   @inline(__always)
   public static func += (lhs: inout RawPointer, rhs: UInt) {
     lhs.add(rhs)
   }
 
-  /// Subtracts `rhs` from the address of the pointer.
+  /// Subtracts `rhs` from the address of the `lhs` pointer.
   @inlinable
   @inline(__always)
   public static func -= (lhs: inout RawPointer, rhs: UInt) {
