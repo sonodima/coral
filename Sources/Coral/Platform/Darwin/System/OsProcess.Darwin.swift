@@ -33,9 +33,9 @@
     public var isElevated: Bool?
     private let _startSecs: UInt64?
 
-    public lazy var mainModule: ProcessModule? = {
+    public var mainModule: ProcessModule? {
       try? ProcessModuleIterator(process: self).last()
-    }()
+    }
 
     private var _path: URL?
     public var path: URL? {
