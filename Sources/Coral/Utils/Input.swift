@@ -13,7 +13,22 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 public protocol __Input_Shared {
+  /// Returns `true` if `key` is currently pressed, `false` if it is not, or `nil` if
+  /// the state cannot be determined.`
   static func isDown(key: Key) -> Bool?
+
+  /// Moves the position of the mouse cursor to `point`.
+  /// 
+  /// - Returns: `true` if the operation was successful, `false` otherwise.
   static func moveMouse(to point: Vector2D) -> Bool
+  
+  /// Moves the position of the mouse cursor by `delta` pixels.
+  /// 
+  /// - Returns: `true` if the operation was successful, `false` otherwise.
+  /// 
+  /// You can use this function to simulate mouse movement in a program that locks the
+  /// cursor.
+  /// 
+  /// - Note: Depending on the operating system, this function may behave differently.
   static func moveMouse(by delta: Vector2D) -> Bool
 }
