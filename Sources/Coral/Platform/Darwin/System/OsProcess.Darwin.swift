@@ -27,16 +27,17 @@
       return _local!
     }
 
+    private let _startSecs: UInt64?
+
     public let id: UInt
     public let name: String?
     public let architecture: Architecture
     public var isElevated: Bool?
-    private let _startSecs: UInt64?
-
+    
     public var mainModule: ProcessModule? {
       try? ProcessModuleIterator(process: self).last()
     }
-
+    
     private var _path: URL?
     public var path: URL? {
       // This getter is marked as mutating for the sake of consistency with other

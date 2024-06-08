@@ -29,13 +29,13 @@ public final class Limiter {
     case skip
   }
 
+  private var last: UInt64?
+
   /// The number of times the block can be executed per second.
   public var target: UInt
 
   /// The strategy _(implementation)_ to use to limit the execution of the block.
   public var strategy: Strategy
-
-  private var last: UInt64?
 
   /// Creates an instance with the given `target` rate and `strategy`.
   public init(target: UInt = 60, strategy: Strategy = .sleep) {
