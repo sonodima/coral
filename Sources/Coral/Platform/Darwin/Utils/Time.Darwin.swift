@@ -17,7 +17,7 @@
   import Darwin
 
   public struct Time: __Time_Shared {
-    public static var ticks: UInt64 {
+    public static var now: UInt64 {
       var info = mach_timebase_info_data_t()
       return if mach_timebase_info(&info) == KERN_SUCCESS {
         // TODO: This may overflow, even with 64-bit arithmetic. Investigate.
@@ -29,6 +29,7 @@
       }
     }
 
+    @discardableResult
     public static func sleep(for span: TimeSpan) -> Bool {
       var info = mach_timebase_info_data_t()
       if mach_timebase_info(&info) == KERN_SUCCESS {

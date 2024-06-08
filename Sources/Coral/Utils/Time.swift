@@ -14,7 +14,7 @@
 
 public protocol __Time_Shared {
   /// The number of ticks of the system's absolute clock.
-  static var ticks: UInt64 { get }
+  static var now: UInt64 { get }
 
   /// Interrupts the execution of the current thread for the specified amount of time.
   /// 
@@ -25,6 +25,7 @@ public protocol __Time_Shared {
   ///
   /// Keep in mind that for high throughput applications, you should probably consider
   /// using asynchronous code instead of sleeping the thread.
+  @discardableResult
   static func sleep(for span: TimeSpan) -> Bool
 }
 
@@ -34,9 +35,9 @@ extension __Time_Shared {
   @inlinable
   @inline(__always)
   public static func measure<R>(_ block: () throws -> R) rethrows -> (R, TimeSpan) {
-    let start = ticks
+    let start = now
     let result = try block()
-    let elapsed = TimeSpan(nanos: ticks - start)
+    let elapsed = TimeSpan(nanos: now - start)
     return (result, elapsed)
   }
 

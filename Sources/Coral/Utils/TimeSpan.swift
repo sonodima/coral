@@ -117,6 +117,11 @@ public struct TimeSpan {
   public static func -= (lhs: inout TimeSpan, rhs: TimeSpan) {
     lhs.subtract(rhs)
   }
+
+  /// A value that represents zero time.  
+  public static var zero: TimeSpan {
+    TimeSpan(nanos: 0)
+  }
 }
 
 extension TimeSpan: Equatable {
