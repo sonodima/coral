@@ -1,0 +1,9 @@
+#ifndef _CWINPRIVATE_INCLUDE_H
+#define _CWINPRIVATE_INCLUDE_H
+
+#include <ntdef.h>
+
+NTSYSAPI NTSTATUS NTAPI
+NtDelayExecution(IN BOOLEAN Alertable, IN PLARGE_INTEGER DelayInterval);
+
+#endif // _CWINPRIVATE_INCLUDE_H

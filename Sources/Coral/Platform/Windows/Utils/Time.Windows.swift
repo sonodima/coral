@@ -15,17 +15,14 @@
 #if os(Windows)
 
   import WinSDK
-  import Foundation
+
+  import CWinPrivate
 
   public struct Time: __Time_Shared {
-    public static func sleep(for span: TimeSpan) {
+    public static func sleep(for span: TimeSpan) -> Bool {
       var li = LARGE_INTEGER()
       li.QuadPart = -(span.nanos / 100)
-      guard NtDelayExecution(false, &li) != 0 /* NT_SUCCESS */ else {
-        return
-      }
-
-      Thread.sleep(forTimeInterval: TimeInterval(span.millis))
+      return NtDelayExecution(false, &li) == 0 /* NT_SUCCESS */
     }
 
     @discardableResult
@@ -38,11 +35,5 @@
       timeEndPeriod(1) == TIMERR_NOERROR
     }
   }
-
-  @_silgen_name("NtDelayExecution")
-  private func NtDelayExecution(
-    _ alertable: WindowsBool,
-    _ interval: PLARGE_INTEGER
-  ) -> NTSTATUS
 
 #endif

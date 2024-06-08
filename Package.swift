@@ -16,16 +16,6 @@
 
 import PackageDescription
 
-var linkerSettings: [LinkerSetting] {
-  #if os(Windows)
-    [
-      .linkedLibrary("ntdll")
-    ]
-  #else
-    []
-  #endif
-}
-
 let package = Package(
   name: "Coral",
   products: [
@@ -35,8 +25,7 @@ let package = Package(
       targets: ["Example_Junkyard"]),
   ],
   targets: [
-    .target(name: "Coral", linkerSettings: linkerSettings),
-
+    .target(name: "Coral"),
     .executableTarget(
       name: "Example_Junkyard",
       dependencies: ["Coral"],
@@ -50,7 +39,12 @@ let coral = package.targets.first { $0.name == "Coral" }
 
   package.targets.append(
     .target(name: "CDyld", path: "Sources/CDyld"))
-
   coral?.dependencies.append("CDyld")
+
+#elseif os(Windows)
+
+  package.targets.append(
+    .target(name: "CWinPrivate", path: "Sources/CWinPrivate"))
+  coral?.dependencies.append("CWinPrivate")
 
 #endif
