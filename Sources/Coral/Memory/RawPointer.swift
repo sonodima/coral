@@ -339,8 +339,8 @@ public struct RawPointer {
   /// ```
   @inlinable
   @inline(__always)
-  public func to<T>(_ lambda: (RawPointer) -> T) -> T {
-    lambda(self)
+  public func to<T>(_ lambda: (RawPointer) throws -> T) rethrows -> T {
+    try lambda(self)
   }
 
   /// Returns a ``MemRange`` starting at the memory location pointed to by `self` and

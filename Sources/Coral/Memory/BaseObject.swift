@@ -64,8 +64,8 @@ open class BaseObject {
   ///              object-specific values will not be transferred to the new object.
   @inlinable
   @inline(__always)
-  public func to<T>(_ lambda: (RawPointer) -> T) -> T {
-    lambda(pointer)
+  public func to<T>(_ lambda: (RawPointer) throws -> T) rethrows -> T {
+    try lambda(pointer)
   }
 }
 
