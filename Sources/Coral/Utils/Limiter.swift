@@ -12,26 +12,45 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
+/// A utility to limit the execution of a block to a certain rate.
 public final class Limiter {
-  public enum Mode {
-    case block
+  /// The strategy to use to limit the execution of a block.
+  public enum Strategy {
+    /// Sleep for the remaining time to reach the target rate.
+    ///
+    /// This is accurate enough for most cases, but it's not perfect due to the nature
+    /// of thread scheduling.
+    case sleep
+
+    /// Skip the execution if it enough time has not passed since the last execution.
+    ///
+    /// This is very easy on the CPU, but you must already be running on a loop for
+    /// it to be effective.
     case skip
   }
 
+  /// The number of times the block can be executed per second.
   public var target: UInt
-  public var mode: Mode
+
+  /// The strategy _(implementation)_ to use to limit the execution of the block.
+  public var strategy: Strategy
 
   private var last: UInt64?
 
-  public init(target: UInt = 60, mode: Mode = .block) {
+  /// Creates an instance with the given `target` rate and `strategy`.
+  public init(target: UInt = 60, strategy: Strategy = .sleep) {
     self.target = target
-    self.mode = mode
+    self.strategy = strategy
   }
 
-  public func limit(_ block: (TimeSpan?) throws -> Void) rethrows {
+  /// Limits the execution of `block` to the target rate using the specified strategy.
+  ///
+  /// Unless it's the first run, `block` is called with the elapsed time since the last
+  /// execution.
+  public func limit(_ block: (_ dt: TimeSpan?) throws -> Void) rethrows {
     var elapsed = timeFromLast()
     let step = 1000.0 / Double(target)
-    
+
     // If it's the first run, just execute the block and return.
     if elapsed == nil {
       last = Time.now
@@ -45,7 +64,7 @@ public final class Limiter {
     //
     // This takes a bit more CPU time, but it's wildly more accurate than just sleeping
     // for the full duration.
-    if mode == .block {
+    if strategy == .sleep {
       var remaining = step - elapsed!.millis
 
       last = Time.now
@@ -58,7 +77,7 @@ public final class Limiter {
       }
     }
 
-    if mode == .skip && elapsed!.millis < step {
+    if strategy == .skip && elapsed!.millis < step {
       return
     }
 
