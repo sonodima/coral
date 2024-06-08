@@ -18,21 +18,21 @@ public struct TimeSpan {
   public var nanos: UInt64
 
   /// The number of microseconds in the time span.
-  /// 
+  ///
   /// This value will always be greater than or equal to zero.
   public var micros: Double {
     Double(nanos) / 1_000
   }
 
   /// The number of milliseconds in the time span.
-  /// 
+  ///
   /// This value will always be greater than or equal to zero.
   public var millis: Double {
     Double(nanos) / 1_000_000
   }
 
   /// The number of seconds in the time span.
-  /// 
+  ///
   /// This value will always be greater than or equal to zero.
   public var secs: Double {
     Double(nanos) / 1_000_000_000
@@ -44,27 +44,24 @@ public struct TimeSpan {
   }
 
   /// Creates an instance with the specified number of microseconds.
-  /// 
+  ///
   /// If `micros` is less than zero, the value will be clamped to zero.
   public init(micros: Double) {
-    let micros = micros < 0.0 ? 0.0 : micros
-    nanos = UInt64(micros * 1_000)
+    nanos = UInt64(micros < 0.0 ? 0.0 : micros * 1_000)
   }
 
   /// Creates an instance with the specified number of milliseconds.
-  /// 
+  ///
   /// If `millis` is less than zero, the value will be clamped to zero.
   public init(millis: Double) {
-    let millis = millis < 0.0 ? 0.0 : millis
-    nanos = UInt64(millis * 1_000_000)
+    nanos = UInt64(millis < 0.0 ? 0.0 : millis * 1_000_000)
   }
 
   /// Creates an instance with the specified number of seconds.
-  /// 
+  ///
   /// If `secs` is less than zero, the value will be clamped to zero.
   public init(secs: Double) {
-    let secs = secs < 0.0 ? 0.0 : secs
-    nanos = UInt64(secs * 1_000_000_000)
+    nanos = UInt64(secs < 0.0 ? 0.0 : secs * 1_000_000_000)
   }
 
   /// Returns a ``TimeSpan`` that represents the sum of `self` and `other`.
@@ -78,7 +75,7 @@ public struct TimeSpan {
   public func subtracting(_ other: TimeSpan) -> TimeSpan {
     TimeSpan(
       nanos: other.nanos > other.nanos
-        ? other.nanos - other.nanos : 0)
+        ? other.nanos - other.nanos : UInt64.min)
   }
 
   /// Adds `other` to the time span.
@@ -95,11 +92,9 @@ public struct TimeSpan {
     if nanos > other.nanos {
       nanos -= other.nanos
     } else {
-      nanos = 0
+      nanos = UInt64.min
     }
   }
-
-  // TODO: multiply, divide, multiplying, dividing, *, /, *=, /=
 
   /// Returns a ``TimeSpan`` that represents the sum of `lhs` and `rhs`.
   public static func + (lhs: TimeSpan, rhs: TimeSpan) -> TimeSpan {
@@ -150,13 +145,21 @@ extension TimeSpan: Hashable {
 extension TimeSpan: CustomDebugStringConvertible {
   /// A textual representation of the time span, suitable for debugging.
   public var debugDescription: String {
-    String(format: "%.3fms", millis)
+    "TimeSpan(nanos: \(nanos))"
   }
 }
 
 extension TimeSpan: CustomStringConvertible {
   /// A textual representation of the time span.
   public var description: String {
-    String(format: "%.3fms", millis)
+    if nanos < 1_000 {
+      "\(nanos)ns"
+    } else if nanos < 1_000_000 {
+      String(format: "%.3fμs", micros)
+    } else if nanos < 1_000_000_000 {
+      String(format: "%.3fms", millis)
+    } else {
+      String(format: "%.3fs", secs)
+    }
   }
 }
