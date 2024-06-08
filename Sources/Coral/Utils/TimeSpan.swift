@@ -34,7 +34,7 @@ public struct TimeSpan {
   /// The number of seconds in the time span.
   ///
   /// This value will always be greater than or equal to zero.
-  public var secs: Double {
+  public var seconds: Double {
     Double(nanos) / 1_000_000_000
   }
 
@@ -59,23 +59,25 @@ public struct TimeSpan {
 
   /// Creates an instance with the specified number of seconds.
   ///
-  /// If `secs` is less than zero, the value will be clamped to zero.
-  public init(secs: Double) {
-    nanos = UInt64(secs < 0.0 ? 0.0 : secs * 1_000_000_000)
+  /// If `seconds` is less than zero, the value will be clamped to zero.
+  public init(seconds: Double) {
+    nanos = UInt64(seconds < 0.0 ? 0.0 : seconds * 1_000_000_000)
   }
 
   /// Returns a ``TimeSpan`` that represents the sum of `self` and `other`.
   public func adding(_ other: TimeSpan) -> TimeSpan {
     TimeSpan(
       nanos: UInt64.max - nanos > other.nanos
-        ? nanos + other.nanos : UInt64.max)
+        ? nanos + other.nanos
+        : UInt64.max)
   }
 
   /// Returns a ``TimeSpan`` that represents the difference between `self` and `other`.
   public func subtracting(_ other: TimeSpan) -> TimeSpan {
     TimeSpan(
       nanos: other.nanos > other.nanos
-        ? other.nanos - other.nanos : UInt64.min)
+        ? other.nanos - other.nanos
+        : UInt64.min)
   }
 
   /// Adds `other` to the time span.
@@ -159,7 +161,7 @@ extension TimeSpan: CustomStringConvertible {
     } else if nanos < 1_000_000_000 {
       String(format: "%.3fms", millis)
     } else {
-      String(format: "%.3fs", secs)
+      String(format: "%.3fs", seconds)
     }
   }
 }

@@ -15,19 +15,32 @@
 #if os(macOS)
 
   import Darwin
-  import Foundation
 
   public struct Time: __Time_Shared {
-    public static func sleep(for span: TimeSpan) {
+    public static var ticks: UInt64 {
+      var info = mach_timebase_info_data_t()
+      return if mach_timebase_info(&info) == KERN_SUCCESS {
+        // TODO: This may overflow, even with 64-bit arithmetic. Investigate.
+        //       https://stackoverflow.com/questions/23378063/how-can-i-use-mach-absolute-time-without-overflowing
+        mach_absolute_time() * UInt64(info.numer) / UInt64(info.denom)
+      } else {
+        // We'll just assume the scaling factor is 1:1. :shrug:
+        mach_absolute_time()
+      }
+    }
+
+    public static func sleep(for span: TimeSpan) -> Bool {
       var info = mach_timebase_info_data_t()
       if mach_timebase_info(&info) == KERN_SUCCESS {
+        // TODO: This may overflow, even with 64-bit arithmetic. Investigate.
+        //       https://stackoverflow.com/questions/23378063/how-can-i-use-mach-absolute-time-without-overflowing
         let ttw = span.nanos * UInt64(info.denom) / UInt64(info.numer)
         if mach_wait_until(mach_absolute_time() + ttw) == KERN_SUCCESS {
-          return
+          return true
         }
       }
 
-      Thread.sleep(forTimeInterval: TimeInterval(span.secs))
+      return false
     }
   }
 

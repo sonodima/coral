@@ -13,5 +13,38 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 public protocol __Time_Shared {
-  static func sleep(for span: TimeSpan)
+  /// The number of ticks of the system's absolute clock.
+  static var ticks: UInt64 { get }
+
+  /// Interrupts the execution of the current thread for the specified amount of time.
+  /// 
+  /// - Returns: `true` if the thread was successfully put to sleep; otherwise, `false`.
+  ///
+  /// If possible, this function will attempt to use the highest resolution sleep
+  /// available on the platform.
+  ///
+  /// Keep in mind that for high throughput applications, you should probably consider
+  /// using asynchronous code instead of sleeping the thread.
+  static func sleep(for span: TimeSpan) -> Bool
+}
+
+extension __Time_Shared {
+  /// Executes the given `block` measuring the time it takes to complete with the
+  /// highest resolution available on the platform.
+  @inlinable
+  @inline(__always)
+  public static func measure<R>(_ block: () throws -> R) rethrows -> (R, TimeSpan) {
+    let start = ticks
+    let result = try block()
+    let elapsed = TimeSpan(nanos: ticks - start)
+    return (result, elapsed)
+  }
+
+  /// Executes the given `block` measuring the time it takes to complete with the
+  /// highest resolution available on the platform.
+  @inlinable
+  @inline(__always)
+  public static func measure(_ block: () throws -> Void) rethrows -> TimeSpan {
+    try measure(block).1
+  }
 }
