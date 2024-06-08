@@ -12,6 +12,8 @@
 // You should have received a copy of the GNU General Public License along with Coral.
 // If not, see <https://www.gnu.org/licenses/>.
 
+/// A base class for all objects that are associated with a memory location within
+/// a memory view.
 open class BaseObject {
   /// The pointer to the object in memory.
   public let pointer: RawPointer
