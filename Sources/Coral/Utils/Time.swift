@@ -17,7 +17,7 @@ public protocol __Time_Shared {
   static var now: UInt64 { get }
 
   /// Interrupts the execution of the current thread for the specified amount of time.
-  /// 
+  ///
   /// - Returns: `true` if the thread was successfully put to sleep; otherwise, `false`.
   ///
   /// If possible, this function will attempt to use the highest resolution sleep
@@ -47,5 +47,25 @@ extension __Time_Shared {
   @inline(__always)
   public static func measure(_ block: () throws -> Void) rethrows -> TimeSpan {
     try measure(block).1
+  }
+
+  /// Increases the resolution of system timers to the highest available.
+  /// 
+  /// - Returns: `true` if the resolution was successfully increased; otherwise, `false`.
+  /// 
+  /// This function is a no-op on platforms where the resolution cannot be modified.
+  @discardableResult
+  public static func increasePrecision() -> Bool {
+    false
+  }
+
+  /// Restores the resolution of system timers to the default.
+  /// 
+  /// - Returns: `true` if the resolution was successfully restored; otherwise, `false`.
+  /// 
+  /// This function is a no-op on platforms where the resolution cannot be modified.
+  @discardableResult
+  public static func restorePrecision() -> Bool {
+    false
   }
 }
