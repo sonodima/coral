@@ -18,6 +18,8 @@
 
   import CWinPrivate
 
+  /// Provides time-related functionality implemented using the system's
+  /// highest-resolution timing functions.
   public struct Time: __Time_Shared {
     public static var now: UInt64 {
       var counter = LARGE_INTEGER()
