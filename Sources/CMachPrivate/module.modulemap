@@ -1,5 +1,0 @@
-module CMachPrivate [system] {
-  header "include/dyld.h"
-  
-  export *
-}

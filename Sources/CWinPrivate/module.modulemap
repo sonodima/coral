@@ -1,6 +1,0 @@
-module CWinPrivate [system] {
-  header "include/nt.h"
-  link "ntdll"
-  
-  export *
-}
