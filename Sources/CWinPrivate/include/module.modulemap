@@ -1,4 +1,4 @@
-module CWinPrivate {
+module CWinPrivate [system] {
   header "nt.h"
   link "ntdll"
 }
