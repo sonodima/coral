@@ -46,6 +46,28 @@ public protocol __Time_Shared {
 }
 
 extension __Time_Shared {
+  /// Interrupts the execution of the current thread for the specified number
+  /// of seconds.
+  ///
+  /// - Returns: `true` if the thread was successfully put to sleep; otherwise, `false`.
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public static func sleep(seconds: Double) -> Bool {
+    sleep(for: TimeSpan(seconds: seconds))
+  }
+
+  /// Interrupts the execution of the current thread for the specified number
+  /// of milliseconds.
+  ///
+  /// - Returns: `true` if the thread was successfully put to sleep; otherwise, `false`.
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public static func sleep(millis: Double) -> Bool {
+    sleep(for: TimeSpan(millis: millis))
+  }
+
   /// Executes the given `block` measuring the time it takes to complete with the
   /// highest resolution available on the platform.
   @inlinable
