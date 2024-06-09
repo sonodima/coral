@@ -29,21 +29,14 @@
       return mach_wait_until(mach_absolute_time() + ttw) == KERN_SUCCESS
     }
 
-    @discardableResult
-    public static func increasePrecision() -> Bool {
-      // TODO: implement
-      var policy = thread_time_constraint_policy()
-      return true
-    }
-
     private static let tbInfo: (UInt32, UInt32) = {
       var info = mach_timebase_info_data_t()
-      guard mach_timebase_info(&info) == KERN_SUCCESS else {
+      return if mach_timebase_info(&info) == KERN_SUCCESS {
+        (info.numer, info.denom)
+      } else {
         // We'll just assume the scaling factor is 1:1. :shrug:
-        return (1, 1)
+        (1, 1)
       }
-
-      return (info.numer, info.denom)
     }()
   }
 
