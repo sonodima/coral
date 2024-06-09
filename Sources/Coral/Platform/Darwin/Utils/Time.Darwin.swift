@@ -20,16 +20,16 @@
   /// highest-resolution timing functions.
   public struct Time: __Time_Shared {
     public static var now: UInt64 {
-      mach_absolute_time() * UInt64(tbInfo.0) / UInt64(tbInfo.1)
+      mach_absolute_time() * UInt64(_tbInfo.0) / UInt64(tbInfo.1)
     }
 
     @discardableResult
     public static func sleep(for span: TimeSpan) -> Bool {
-      let ttw = span.nanos * UInt64(tbInfo.1) / UInt64(tbInfo.0)
+      let ttw = span.nanos * UInt64(_tbInfo.1) / UInt64(_tbInfo.0)
       return mach_wait_until(mach_absolute_time() + ttw) == KERN_SUCCESS
     }
 
-    private static let tbInfo: (UInt32, UInt32) = {
+    private static let _tbInfo: (UInt32, UInt32) = {
       var info = mach_timebase_info_data_t()
       return if mach_timebase_info(&info) == KERN_SUCCESS {
         (info.numer, info.denom)

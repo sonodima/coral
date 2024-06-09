@@ -20,17 +20,13 @@
 
   public struct Time: __Time_Shared {
     public static var now: UInt64 {
-      var frequency = LARGE_INTEGER()
-      QueryPerformanceFrequency(&frequency)
-
       var counter = LARGE_INTEGER()
       QueryPerformanceCounter(&counter)
 
-
-      let denom = UInt64(frequency.QuadPart)
-      // let denom = UInt64(frequency.QuadPart) / 1_000_000_000
-      // return UInt64(counter.QuadPart) / denom
-      return UInt64(counter.QuadPart) * 100
+      // NOTE: I'm not sure if this may result in some unexpected behavior due to the
+      //       fact that we are casting the scale to an integer.
+      let scale = 1e9 / Double(_frequency)
+      return UInt64(counter.QuadPart) * UInt64(scale)
     }
 
     @discardableResult
@@ -49,6 +45,12 @@
     public static func restorePrecision() -> Bool {
       timeEndPeriod(1) == TIMERR_NOERROR
     }
+
+    private static var _frequency: UInt64 = {
+      var frequency = LARGE_INTEGER()
+      QueryPerformanceFrequency(&frequency)
+      return UInt64(frequency.QuadPart)
+    }()
   }
 
 #endif
