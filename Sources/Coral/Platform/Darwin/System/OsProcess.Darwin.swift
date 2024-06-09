@@ -19,11 +19,11 @@
 
   public struct OsProcess: __OsProcess_Shared {
     public static var local: Self = {
-      let id = UInt(ProcessInfo.processInfo.processIdentifier)
+      let id = ProcessInfo.processInfo.processIdentifier
       // Force unwrap _should_ be safe here assuming that the process contructor only
       // returns nil if the process is not running, which will never be the case for
       // the current process.
-      return Self(id: id)!
+      return Self(id: UInt(id))!
     }()
 
     private let _startSecs: UInt64?

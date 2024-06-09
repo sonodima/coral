@@ -21,21 +21,16 @@
       UInt(vm_page_size)
     }
 
-    private static var _architecture: Architecture?
-    public static var architecture: Architecture {
-      if _architecture == nil {
-        var value = cpu_type_t()
-        var size = MemoryLayout<cpu_type_t>.size
-        let result = sysctlbyname("hw.cputype", &value, &size, nil, 0)
-        guard result != -1 else {
-          return Architecture.unknown
-        }
-
-        _architecture = Architecture(value)
+    public static var architecture: Architecture = {
+      var value = cpu_type_t()
+      var size = MemoryLayout<cpu_type_t>.size
+      let result = sysctlbyname("hw.cputype", &value, &size, nil, 0)
+      guard result != -1 else {
+        return Architecture.unknown
       }
 
-      return _architecture!
-    }
+      return Architecture(value)
+    }()
   }
 
 #endif
