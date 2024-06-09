@@ -14,7 +14,7 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
 
   public struct Platform: __Platform_Shared {
     public static var pageSize: UInt {

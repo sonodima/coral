@@ -14,7 +14,7 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
   import Foundation
 
   public struct OsProcess: __OsProcess_Shared {

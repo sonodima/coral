@@ -14,7 +14,7 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
 
   extension Protection {
     internal init(_ value: vm_prot_t) {

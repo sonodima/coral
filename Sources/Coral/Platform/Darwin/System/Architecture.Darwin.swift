@@ -14,7 +14,7 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
 
   extension Architecture {
     internal init(_ value: cpu_type_t) {

@@ -14,7 +14,7 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
 
   public final class OsProcessIterator: __OsProcessIterator_Shared {
     private let _pids: [pid_t]

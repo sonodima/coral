@@ -14,7 +14,7 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
 
   /// An implementation of ``MemView`` that uses the system's user-mode APIs to perform
   /// memory operations on a remote process.
