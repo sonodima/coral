@@ -18,14 +18,13 @@
   import Foundation
 
   public struct OsProcess: __OsProcess_Shared {
-    private static var _local: Self?
-    public static var local: Self {
-      if _local == nil {
-        _local = Self(id: UInt(ProcessInfo.processInfo.processIdentifier))
-      }
-
-      return _local!
-    }
+    public static var local: Self = {
+      let id = UInt(ProcessInfo.processInfo.processIdentifier)
+      // Force unwrap _should_ be safe here assuming that the process contructor only
+      // returns nil if the process is not running, which will never be the case for
+      // the current process.
+      return Self(id: id)!
+    }()
 
     private let _startSecs: UInt64?
 
@@ -33,11 +32,11 @@
     public let name: String?
     public let architecture: Architecture
     public var isElevated: Bool?
-    
+
     public var mainModule: ProcessModule? {
       try? ProcessModuleIterator(process: self).last()
     }
-    
+
     private var _path: URL?
     public var path: URL? {
       // This getter is marked as mutating for the sake of consistency with other

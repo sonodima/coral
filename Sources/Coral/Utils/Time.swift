@@ -27,6 +27,22 @@ public protocol __Time_Shared {
   /// using asynchronous code instead of sleeping the thread.
   @discardableResult
   static func sleep(for span: TimeSpan) -> Bool
+
+  /// Increases the resolution of system timers to the highest available.
+  ///
+  /// - Returns: `true` if the resolution was successfully increased; otherwise, `false`.
+  ///
+  /// This function is a no-op on platforms where the resolution cannot be modified.
+  @discardableResult
+  static func increasePrecision() -> Bool
+
+  /// Restores the resolution of system timers to the default.
+  ///
+  /// - Returns: `true` if the resolution was successfully restored; otherwise, `false`.
+  ///
+  /// This function is a no-op on platforms where the resolution cannot be modified.
+  @discardableResult
+  static func restorePrecision() -> Bool
 }
 
 extension __Time_Shared {
@@ -49,21 +65,11 @@ extension __Time_Shared {
     try measure(block).1
   }
 
-  /// Increases the resolution of system timers to the highest available.
-  /// 
-  /// - Returns: `true` if the resolution was successfully increased; otherwise, `false`.
-  /// 
-  /// This function is a no-op on platforms where the resolution cannot be modified.
   @discardableResult
   public static func increasePrecision() -> Bool {
     false
   }
 
-  /// Restores the resolution of system timers to the default.
-  /// 
-  /// - Returns: `true` if the resolution was successfully restored; otherwise, `false`.
-  /// 
-  /// This function is a no-op on platforms where the resolution cannot be modified.
   @discardableResult
   public static func restorePrecision() -> Bool {
     false

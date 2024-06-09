@@ -30,6 +30,10 @@ public protocol __OsProcess_Shared:
   /// The processor architecture of the process.
   var architecture: Architecture { get }
 
+  /// A Boolean value indicating whether the process is running with elevated
+  /// privileges, or `nil` if the information is not available.
+  var isElevated: Bool? { get }
+
   /// The main module of the process, or `nil` if not available.
   var mainModule: ProcessModule? { get }
 
@@ -39,10 +43,6 @@ public protocol __OsProcess_Shared:
   /// A Boolean value indicating whether the process is still running, or `nil`
   /// if the information is not available.
   var isRunning: Bool? { get }
-
-  /// A Boolean value indicating whether the process is running with elevated
-  /// privileges, or `nil` if the information is not available.
-  var isElevated: Bool? { get }
 
   /// Creates an instance for the process with the specified `id`.
   /// 
