@@ -16,6 +16,10 @@
 
   import Darwin.Mach
 
+  /// An iterator over the processes currently running on the system.
+  ///
+  /// Depending on the internal implementation, the iterator may fetch all processes at
+  /// once or lazily.
   public final class OsProcessIterator: __OsProcessIterator_Shared {
     private let _pids: [pid_t]
     private var _index = 0

@@ -16,6 +16,10 @@
 
   import WinSDK
 
+  /// An iterator over the processes currently running on the system.
+  ///
+  /// Depending on the internal implementation, the iterator may fetch all processes at
+  /// once or lazily.
   public final class OsProcessIterator: __OsProcessIterator_Shared {
     private let _snapshot: HANDLE
     private var _entry: PROCESSENTRY32W

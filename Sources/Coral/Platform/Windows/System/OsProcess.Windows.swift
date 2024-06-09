@@ -17,6 +17,7 @@
   import WinSDK
   import Foundation
 
+  /// A process that, at the time of initialization, was running on the system.
   public struct OsProcess: __OsProcess_Shared {
     public static var local: Self = {
       let id = GetCurrentProcessId()

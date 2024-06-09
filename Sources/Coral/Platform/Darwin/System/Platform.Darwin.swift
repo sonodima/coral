@@ -16,6 +16,7 @@
 
   import Darwin.Mach
 
+  /// Provides information and utilities for the current system.
   public struct Platform: __Platform_Shared {
     public static var pageSize: UInt {
       UInt(vm_page_size)

@@ -16,6 +16,8 @@
 
   import WinSDK
 
+  /// An implementation of ``MemView`` that uses the system's user-mode APIs to perform
+  /// memory operations on a remote process.
   open class MemView_User: __MemView_User_Shared {
     private var _handle: HANDLE
 

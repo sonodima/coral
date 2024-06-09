@@ -18,11 +18,11 @@
 
   extension Architecture {
     internal init(_ value: WORD) {
-      self = switch value {
-      case WORD(PROCESSOR_ARCHITECTURE_AMD64): .x86_64
-      case WORD(PROCESSOR_ARCHITECTURE_INTEL): .x86
-      case WORD(PROCESSOR_ARCHITECTURE_ARM64): .arm64
-      case WORD(PROCESSOR_ARCHITECTURE_ARM): .arm
+      self = switch Int32(value) {
+      case PROCESSOR_ARCHITECTURE_AMD64: .x86_64
+      case PROCESSOR_ARCHITECTURE_INTEL: .x86
+      case PROCESSOR_ARCHITECTURE_ARM64: .arm64
+      case PROCESSOR_ARCHITECTURE_ARM: .arm
       default: .unknown
       }
     }

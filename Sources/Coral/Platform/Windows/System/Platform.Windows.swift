@@ -16,6 +16,7 @@
 
   import WinSDK
 
+  /// Provides information and utilities for the current system.
   public struct Platform: __Platform_Shared {
     public static var pageSize: UInt = {
       var info = SYSTEM_INFO()
