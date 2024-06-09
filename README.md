@@ -1,8 +1,5 @@
 <h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./Assets/Images/Header_Dark.svg">
-    <img alt="Coral" src="./Assets/Images/Header_Light.svg">
-  </picture>
+  <img alt="Coral" src="./Assets/Images/Logo.svg" width="320px">
 </h1>
 
 <div align="center">
