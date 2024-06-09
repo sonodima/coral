@@ -70,7 +70,9 @@ public final class Limiter {
       last = Time.now
       while remaining > 0.66 {
         let ttw = TimeSpan(millis: remaining * 0.8)
-        Time.sleep(for: ttw)
+        guard Time.sleep(for: ttw) else {
+          break
+        }
 
         elapsed = timeFromLast()
         remaining = step - (elapsed?.millis ?? 0.0)
