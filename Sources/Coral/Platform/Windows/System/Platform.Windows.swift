@@ -17,27 +17,17 @@
   import WinSDK
 
   public struct Platform: __Platform_Shared {
-    private static var _pageSize: UInt?
-    public static var pageSize: UInt {
-      if _pageSize == nil {
-        var info = SYSTEM_INFO()
-        GetSystemInfo(&info)
-        _pageSize = UInt(info.dwPageSize)
-      }
+    public static var pageSize: UInt = {
+      var info = SYSTEM_INFO()
+      GetSystemInfo(&info)
+      return UInt(info.dwPageSize)
+    }()
 
-      return _pageSize!
-    }
-
-    private static var _architecture: Architecture?
-    public static var architecture: Architecture {
-      if _architecture == nil {
-        var info = SYSTEM_INFO()
-        GetNativeSystemInfo(&info)
-        _architecture = Architecture(info.wProcessorArchitecture)
-      }
-
-      return _architecture!
-    }
+    public static var architecture: Architecture = {
+      var info = SYSTEM_INFO()
+      GetNativeSystemInfo(&info)
+      return Architecture(info.wProcessorArchitecture)
+    }()
   }
 
 #endif

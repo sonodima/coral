@@ -15,7 +15,12 @@
 #if os(Windows)
 
   import WinSDK
+  import Foundation
 
+  /// An iterator over the loaded modules of a process.
+  ///
+  /// Depending on the internal implementation, the iterator may load all modules at
+  /// once or lazily.
   public final class ProcessModuleIterator: __ProcessModuleIterator_Shared {
     private let _snapshot: HANDLE
     private var _entry: MODULEENTRY32W
@@ -59,6 +64,7 @@
       let module = ProcessModule(
         base: UInt(bitPattern: _entry.modBaseAddr),
         size: UInt(_entry.modBaseSize),
+        path: URL(fileURLWithPath: ""), // TODO: Implement module path retrieval
         name: name)
 
       _done = !Module32NextW(_snapshot, &_entry)

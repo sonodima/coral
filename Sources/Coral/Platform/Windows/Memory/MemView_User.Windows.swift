@@ -107,24 +107,24 @@
 
     open func allocate(
       at address: UInt? = nil,
-      size: UInt = Platform.pageSize,
+      byteCount: UInt = Platform.pageSize,
       protection: Protection
     ) -> MemRange? {
       let type = protection == .none ? MEM_RESERVE : MEM_RESERVE | MEM_COMMIT
       return VirtualAllocEx(
         _handle,
         address.flatMap { LPVOID(bitPattern: $0) },
-        SIZE_T(size),
+        SIZE_T(byteCount),
         DWORD(type),
         protection.system
       ).map { base in
         let address = UInt(bitPattern: base)
-        return MemRange(base: ptr(to: address), size: size)
+        return MemRange(base: ptr(to: address), size: byteCount)
       }
     }
 
     @discardableResult
-    open func free(from address: UInt, size: UInt) -> Bool {
+    open func free(from address: UInt, byteCount: UInt) -> Bool {
       VirtualFreeEx(
         _handle,
         LPVOID(bitPattern: address),
@@ -133,12 +133,12 @@
     }
 
     @discardableResult
-    open func protect(at address: UInt, size: UInt, value: Protection) -> Bool {
+    open func protect(at address: UInt, byteCount: UInt, value: Protection) -> Bool {
       var _oldValue: DWORD = 0
       return VirtualProtectEx(
         _handle,
         LPVOID(bitPattern: address),
-        SIZE_T(size),
+        SIZE_T(byteCount),
         value.system,
         &_oldValue)
     }

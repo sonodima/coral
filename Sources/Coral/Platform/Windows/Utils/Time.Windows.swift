@@ -19,10 +19,25 @@
   import CWinPrivate
 
   public struct Time: __Time_Shared {
+    public static var now: UInt64 {
+      var frequency = LARGE_INTEGER()
+      QueryPerformanceFrequency(&frequency)
+
+      var counter = LARGE_INTEGER()
+      QueryPerformanceCounter(&counter)
+
+
+      let denom = UInt64(frequency.QuadPart)
+      // let denom = UInt64(frequency.QuadPart) / 1_000_000_000
+      // return UInt64(counter.QuadPart) / denom
+      return UInt64(counter.QuadPart) * 100
+    }
+
+    @discardableResult
     public static func sleep(for span: TimeSpan) -> Bool {
       var li = LARGE_INTEGER()
-      li.QuadPart = -(span.nanos / 100)
-      return NtDelayExecution(false, &li) == 0 /* NT_SUCCESS */
+      li.QuadPart = -Int64(span.nanos / 100)
+      return NtDelayExecution(0 /* FALSE */, &li) == 0 /* NT_SUCCESS */
     }
 
     @discardableResult

@@ -18,24 +18,47 @@
   import Foundation
 
   public struct OsProcess: __OsProcess_Shared {
-    private static var _local: Self?
-    public static var local: Self {
-      if _local == nil {
-        _local = Self(id: UInt(ProcessInfo.processInfo.processIdentifier))
-      }
+    public static var local: Self = {
+      let id = GetCurrentProcessId()
+      // Force unwrap _should_ be safe here assuming that the process contructor only
+      // returns nil if the process is not running, which will never be the case for
+      // the current process.
+      return Self(id: UInt(id))!
+    }()
 
-      return _local!
-    }
+    private let _startTime: UInt64?
 
     public let id: UInt
     public let name: String?
     public let architecture: Architecture
-    private let _startTime: UInt64?
 
-    public lazy var mainModule: ProcessModule? = {
+    public var isElevated: Bool? {
+      let access = DWORD(PROCESS_QUERY_LIMITED_INFORMATION)
+      guard let handle = OpenProcess(access, false, DWORD(id)) else {
+        return nil
+      }
+
+      defer { CloseHandle(handle) }
+
+      var token: HANDLE?
+      OpenProcessToken(handle, DWORD(TOKEN_QUERY), &token)
+      guard let token = token else {
+        return nil
+      }
+
+      var elevation = TOKEN_ELEVATION()
+      var size = DWORD(MemoryLayout<TOKEN_ELEVATION>.size)
+      guard GetTokenInformation(token, TokenElevation, &elevation, size, &size) else {
+        return nil
+      }
+
+      return elevation.TokenIsElevated != 0
+    }
+
+    public var mainModule: ProcessModule? {
       // On NT-based systems, the main module is the first module in the list.
-      try? modules().first
-    }()
+      try? iterateModules().next()
+    }
 
     private var _path: URL?
     public var path: URL? {
@@ -63,29 +86,6 @@
         // This is to prevent false positives in the case that the OS reuses the PID.
         value && _startTime == Self.startTimeImpl(for: handle)
       }
-    }
-
-    public var isElevated: Bool? {
-      let access = DWORD(PROCESS_QUERY_LIMITED_INFORMATION)
-      guard let handle = OpenProcess(access, false, DWORD(id)) else {
-        return nil
-      }
-
-      defer { CloseHandle(handle) }
-
-      var token: HANDLE?
-      OpenProcessToken(handle, DWORD(TOKEN_QUERY), &token)
-      guard let token = token else {
-        return nil
-      }
-
-      var elevation = TOKEN_ELEVATION()
-      var size = DWORD(MemoryLayout<TOKEN_ELEVATION>.size)
-      guard GetTokenInformation(token, TokenElevation, &elevation, size, &size) else {
-        return nil
-      }
-
-      return elevation.TokenIsElevated != 0
     }
 
     public init?(id: UInt) {
@@ -151,15 +151,6 @@
       return URL(fileURLWithPath: path)
     }
 
-    private static func isRunningImpl(for handle: HANDLE) -> Bool? {
-      var exitCode = DWORD()
-      return if GetExitCodeProcess(handle, &exitCode) {
-        exitCode == STILL_ACTIVE
-      } else {
-        nil
-      }
-    }
-
     private static func architectureImpl(for handle: HANDLE) -> Architecture {
       var isWow64 = WindowsBool(false)
       IsWow64Process(handle, &isWow64)
@@ -176,6 +167,15 @@
       var _user = FILETIME()
       return if GetProcessTimes(handle, &creation, &_exit, &_kernel, &_user) {
         UInt64(creation.dwHighDateTime) << 32 | UInt64(creation.dwLowDateTime)
+      } else {
+        nil
+      }
+    }
+
+    private static func isRunningImpl(for handle: HANDLE) -> Bool? {
+      var exitCode = DWORD()
+      return if GetExitCodeProcess(handle, &exitCode) {
+        exitCode == STILL_ACTIVE
       } else {
         nil
       }
