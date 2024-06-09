@@ -14,33 +14,37 @@
 
 #if os(macOS)
 
-  import Darwin
+  import Darwin.Mach
 
   /// Provides time-related functionality implemented using the system's
   /// highest-resolution timing functions.
   public struct Time: __Time_Shared {
     public static var now: UInt64 {
-      var info = mach_timebase_info_data_t()
-      return if mach_timebase_info(&info) == KERN_SUCCESS {
-        mach_absolute_time() * UInt64(info.numer) / UInt64(info.denom)
-      } else {
-        // We'll just assume the scaling factor is 1:1. :shrug:
-        mach_absolute_time()
-      }
+      mach_absolute_time() * UInt64(tbInfo.0) / UInt64(tbInfo.1)
     }
 
     @discardableResult
     public static func sleep(for span: TimeSpan) -> Bool {
+      let ttw = span.nanos * UInt64(tbInfo.1) / UInt64(tbInfo.0)
+      return mach_wait_until(mach_absolute_time() + ttw) == KERN_SUCCESS
+    }
+
+    @discardableResult
+    public static func increasePrecision() -> Bool {
+      // TODO: implement
+      var policy = thread_time_constraint_policy()
+      return true
+    }
+
+    private static let tbInfo: (UInt32, UInt32) = {
       var info = mach_timebase_info_data_t()
-      if mach_timebase_info(&info) == KERN_SUCCESS {
-        let ttw = span.nanos * UInt64(info.denom) / UInt64(info.numer)
-        if mach_wait_until(mach_absolute_time() + ttw) == KERN_SUCCESS {
-          return true
-        }
+      guard mach_timebase_info(&info) == KERN_SUCCESS else {
+        // We'll just assume the scaling factor is 1:1. :shrug:
+        return (1, 1)
       }
 
-      return false
-    }
+      return (info.numer, info.denom)
+    }()
   }
 
 #endif
