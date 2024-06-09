@@ -17,7 +17,7 @@
   import Darwin.Mach
   import Foundation
 
-  import CDyld
+  import CMachPrivate
 
   /// An iterator over the loaded modules of a process.
   ///
