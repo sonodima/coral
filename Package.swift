@@ -38,8 +38,8 @@ let coral = package.targets.first { $0.name == "Coral" }
 #if os(macOS)
 
   package.targets.append(
-    .target(name: "CDyld", path: "Sources/CDyld"))
-  coral?.dependencies.append("CDyld")
+    .target(name: "CMachPrivate", path: "Sources/CMachPrivate"))
+  coral?.dependencies.append("CMachPrivate")
 
 #elseif os(Windows)
 
