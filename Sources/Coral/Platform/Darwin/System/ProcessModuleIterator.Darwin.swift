@@ -75,7 +75,7 @@
     ///
     /// If it turns out that this is not the case, we will have to look for the first
     /// module that has `filetype == MH_EXECUTE` _(booo, iteration is slow!)_
-    internal func last() -> ProcessModule? {
+    internal var last: ProcessModule? {
       module(at: _imageInfos.count - 1)
     }
 

@@ -31,10 +31,10 @@
     public let id: UInt
     public let name: String?
     public let architecture: Architecture
-    public var isElevated: Bool?
+    public let isElevated: Bool?
 
     public var mainModule: ProcessModule? {
-      try? ProcessModuleIterator(process: self).last()
+      try? iterateModules().last
     }
 
     private var _path: URL?
