@@ -20,7 +20,7 @@
   /// highest-resolution timing functions.
   public struct Time: __Time_Shared {
     public static var now: UInt64 {
-      mach_absolute_time() * UInt64(_tbInfo.0) / UInt64(tbInfo.1)
+      mach_absolute_time() * UInt64(_tbInfo.0) / UInt64(_tbInfo.1)
     }
 
     @discardableResult
