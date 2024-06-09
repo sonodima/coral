@@ -68,7 +68,7 @@ public final class Limiter {
       var remaining = step - elapsed!.millis
 
       last = Time.now
-      while remaining > 0.1 {
+      while remaining > 0.66 {
         let ttw = TimeSpan(millis: remaining * 0.8)
         Time.sleep(for: ttw)
 
